@@ -109,15 +109,21 @@ const productStatusLabel = (s) => {
 // Helper: render status badge with color per status
 // variant: 'block' fills the table cell width; 'inline' is compact for editor
 const statusBadge = (status, variant = "block") => {
-  const key = status || "";
-  const label = OrderStatusDisplay[key] || key || "-";
+  const raw = status || "";
+  // Accept either internal keys (OrderPlaced/Confirmed/Finished) or Portuguese labels
+  let key = raw;
+  if (!Object.prototype.hasOwnProperty.call(OrderStatusDisplay, key)) {
+    const found = Object.keys(OrderStatusDisplay).find((k) => OrderStatusDisplay[k] === raw);
+    if (found) key = found;
+  }
+  const label = OrderStatusDisplay[key] || raw || "-";
   const baseBlock = "block w-full text-center rounded-md py-1 text-sm font-semibold";
   const baseInline = "inline-block px-3 py-1 text-sm font-semibold rounded";
   const base = variant === "inline" ? baseInline : baseBlock;
 
   if (key === "Confirmed") return <span className={`${base} bg-green-50 border border-green-200 text-green-700`}>{label}</span>;
   if (key === "Finished") return <span className={`${base} bg-blue-50 border border-blue-200 text-blue-700`}>{label}</span>;
-  // default OrderPlaced / Pedido Realizado
+  // default -> OrderPlaced (amarelo claro)
   return <span className={`${base} bg-yellow-50 border border-yellow-200 text-yellow-800`}>{label}</span>;
 };
 
@@ -131,6 +137,7 @@ const OrdersPage = ({ openOrder }) => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showPrintOptions, setShowPrintOptions] = useState(false);
 
   // ===== Utilitário: formatar data =====
   const formatDateTime = (dateString) => {
@@ -166,17 +173,26 @@ const OrdersPage = ({ openOrder }) => {
     const fetchFilteredOrders = async () => {
       setLoading(true);
       try {
-        const params = new URLSearchParams();
-        if (searchTerm && searchTerm.trim()) params.append("search", searchTerm.trim());
-        if (filterStatus) params.append("status", filterStatus);
-        if (dateFrom) params.append("from", dateFrom);
-        if (dateTo) params.append("to", dateTo);
+        // If only searching by customer name (no other filters), use dedicated endpoint
+        if (searchTerm && searchTerm.trim() && !filterStatus && !dateFrom && !dateTo) {
+          const name = encodeURIComponent(searchTerm.trim());
+          const res = await fetch(`/api/orders/customer-name/${name}`);
+          if (!res.ok) throw new Error("Erro na busca por nome");
+          const data = await res.json();
+          setOrders(Array.isArray(data) ? data : []);
+        } else {
+          const params = new URLSearchParams();
+          if (searchTerm && searchTerm.trim()) params.append("search", searchTerm.trim());
+          if (filterStatus) params.append("status", filterStatus);
+          if (dateFrom) params.append("from", dateFrom);
+          if (dateTo) params.append("to", dateTo);
 
-        const url = "/api/orders/all" + (params.toString() ? `?${params.toString()}` : "");
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Erro na busca");
-        const data = await res.json();
-        setOrders(Array.isArray(data) ? data : []);
+          const url = "/api/orders/all" + (params.toString() ? `?${params.toString()}` : "");
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Erro na busca");
+          const data = await res.json();
+          setOrders(Array.isArray(data) ? data : []);
+        }
       } catch (err) {
         console.error(err);
         setOrders([]);
@@ -189,23 +205,8 @@ const OrdersPage = ({ openOrder }) => {
     return () => clearTimeout(debounce);
   }, [searchTerm, filterStatus, dateFrom, dateTo]);
 
-  // ===== 3️⃣ Paginação =====
+  // ===== TABELA (paginação) =====
   const table = useTable(orders, pageSize);
-
-  // ===== 4️⃣ Imprimir pedidos filtrados usando rota de print do backend =====
-  const printFiltered = () => {
-    try {
-      if (!orders || orders.length === 0) return alert("Nenhum pedido para imprimir");
-      const ids = orders.map((o) => o.id).filter(Boolean).join(",");
-      if (!ids) return alert("Nenhum pedido válido para imprimir");
-      // usa a rota do backend para impressão em lote
-      const target = `/api/orders/print?ids=${encodeURIComponent(ids)}`;
-      window.open(target, "_blank");
-    } catch (e) {
-      console.error(e);
-      alert("Erro ao gerar impressão");
-    }
-  };
 
   // ===== 4.1️⃣ Imprimir somente para a cozinha (formato reduzido) =====
   const printForKitchen = () => {
@@ -219,6 +220,22 @@ const OrdersPage = ({ openOrder }) => {
     } catch (e) {
       console.error(e);
       alert("Erro ao gerar impressão para cozinha");
+    }
+  };
+
+  // ===== 4️⃣ Imprimir pedidos filtrados/visíveis (abrir endpoint de impressão) =====
+  const printFiltered = () => {
+    try {
+      // Preferir imprimir os pedidos atualmente visíveis na página da tabela
+      const source = (table && table.pageData && table.pageData.length > 0) ? table.pageData : orders;
+      if (!source || source.length === 0) return alert("Nenhum pedido para imprimir");
+      const ids = source.map((o) => o.id).filter(Boolean).join(",");
+      if (!ids) return alert("Nenhum pedido válido para imprimir");
+      const target = `/api/orders/print?ids=${encodeURIComponent(ids)}`;
+      window.open(target, "_blank");
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao gerar impressão");
     }
   };
 
@@ -251,20 +268,42 @@ const OrdersPage = ({ openOrder }) => {
         />
 
         <button
-          onClick={printFiltered}
-          className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm"
-          title="Imprimir pedidos filtrados"
+          onClick={fetchAllOrders}
+          className="bg-white border border-gray-300 text-gray-700 p-2 rounded-lg hover:bg-gray-50 text-sm flex items-center justify-center"
+          title="Recarregar pedidos"
+          aria-label="Recarregar pedidos"
         >
-          Imprimir
+          <span className="text-lg" aria-hidden>⟳</span>
         </button>
 
-        <button
-          onClick={printForKitchen}
-          className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm"
-          title="Imprimir pedidos para cozinha"
-        >
-          Imprimir Cozinha
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowPrintOptions((s) => !s)}
+            className="ml-2 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-2"
+            title="Opções de impressão"
+          >
+            <span>Impressão</span>
+            <span aria-hidden>🖨️</span>
+          </button>
+
+          {showPrintOptions && (
+            <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded shadow p-2 z-40">
+              <button
+                onClick={() => { setShowPrintOptions(false); printFiltered(); }}
+                className="w-full text-left bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+              >
+                Imprimir
+              </button>
+
+              <button
+                onClick={() => { setShowPrintOptions(false); printForKitchen(); }}
+                className="w-full text-left mt-2 bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+              >
+                Imprimir Cozinha
+              </button>
+            </div>
+          )}
+        </div>
 
         <button
           onClick={() => setShowAdvancedFilters((s) => !s)}
@@ -1244,12 +1283,15 @@ const ProductsPage = ({ products, setProducts }) => {
 };
 
 // ===================== ORDER EDITOR =====================
-const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustomers, products, setProducts }) => {
+const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustomers, products, setProducts, setEditingOrderId }) => {
   const editingOrder = orderId ? orders.find((o) => o.id === orderId) : null;
   const [loadingOrder, setLoadingOrder] = useState(false);
   const [customerQuery, setCustomerQuery] = useState(editingOrder?.customerName || "");
   const [customerResults, setCustomerResults] = useState(customers || []);
   const [selectedCustomer, setSelectedCustomer] = useState(editingOrder?.customerId || null);
+  const [customerCellPhone, setCustomerCellPhone] = useState(
+    editingOrder?.customerCellPhone || editingOrder?.customerCell || editingOrder?.cellPhone || ""
+  );
 
   const [isDelivery, setIsDelivery] = useState(editingOrder?.isDelivery ?? true);
   const [street, setStreet] = useState(editingOrder?.street || "");
@@ -1302,6 +1344,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
   const [showProductEditorId, setShowProductEditorId] = useState(null);
   const [showCustomerEditorId, setShowCustomerEditorId] = useState(null);
+  const [showPrintOptionsOrderEditor, setShowPrintOptionsOrderEditor] = useState(false);
 
   // fetch order details when editing an existing order
   useEffect(() => {
@@ -1325,6 +1368,10 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
         setCity(data.city || (data.address && data.address.city) || "");
         setApartment(data.apartment ?? (data.address && data.address.apartment) ?? false);
         setNumberApartment(data.numberApartment ?? (data.address && data.address.numberApartment) ?? "");
+        // populate phone snapshot from order response when available
+        setCustomerCellPhone(
+          data.customerCellPhone || data.customerCell || data.customerPhone || data.cellPhone || data.CellPhone || ""
+        );
 
         const incomingItems = data.items || data.Items || [];
         setItems(
@@ -1365,6 +1412,8 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
               setCity((cdata.address && cdata.address.city) || cdata.city || city);
               setApartment(cdata.apartment ?? (cdata.address && cdata.address.apartment) ?? apartment);
               setNumberApartment(cdata.numberApartment ?? (cdata.address && cdata.address.numberApartment) ?? numberApartment);
+              // prefer canonical customer phone when available
+              setCustomerCellPhone(cdata.cellPhone || cdata.CellPhone || cdata.cellphone || "");
             }
           } catch (err) {
             // ignore
@@ -1384,6 +1433,10 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
   // customer search (local first, then API)
   useEffect(() => {
+    // When editing an existing order, avoid triggering the live search;
+    // the editor should use the customerId returned by `/api/orders/{id}/items`
+    // and fetch `/api/customers/{id}` instead.
+    if (orderId) return;
     const q = customerQuery.trim();
     if (!q) return setCustomerResults(customers || []);
     const t = setTimeout(async () => {
@@ -1398,7 +1451,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       }
     }, 300);
     return () => clearTimeout(t);
-  }, [customerQuery, customers]);
+  }, [customerQuery, customers, orderId]);
 
   // product search
   useEffect(() => {
@@ -1451,7 +1504,25 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       p.unitType ||
       p.unitOfMeasure ||
       "uni";
-    setItems((s) => [...s, { productId: p.id, productName: p.name, categoryName: p.categoryName || (p.category && (p.category.name || p.categoryName)) || undefined, qty: 1, price: Number(p.price || 0), unitType: unitTypeFromProduct, notes: "" }]);
+    setItems((s) => {
+      const existsIdx = s.findIndex((it) => it.productId === p.id);
+      if (existsIdx >= 0) {
+        // increment quantity if already in the order
+        return s.map((it, i) => (i === existsIdx ? { ...it, qty: Number(it.qty || 0) + 1 } : it));
+      }
+      return [
+        ...s,
+        {
+          productId: p.id,
+          productName: p.name,
+          categoryName: p.categoryName || (p.category && (p.category.name || p.categoryName)) || undefined,
+          qty: 1,
+          price: Number(p.price || 0),
+          unitType: unitTypeFromProduct,
+          notes: "",
+        },
+      ];
+    });
     setProductQuery("");
     setProductResults([]);
   };
@@ -1469,27 +1540,84 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
     const composedDeliveryDate = deliveryDate && deliveryTime ? `${deliveryDate}T${deliveryTime}` : null;
 
+    // Validação: não permitir salvar se a data/hora de entrega for anterior ao momento atual
+    if (composedDeliveryDate) {
+      try {
+        const dParts = (deliveryDate || "").split("-");
+        const tParts = (deliveryTime || "").split(":");
+        if (dParts.length === 3 && tParts.length >= 2) {
+          const y = Number(dParts[0]);
+          const m = Number(dParts[1]) - 1;
+          const d = Number(dParts[2]);
+          const hh = Number(tParts[0]);
+          const mm = Number(tParts[1]);
+          const composedDt = new Date(y, m, d, hh, mm);
+          const now = new Date();
+          if (composedDt < now) {
+            return alert('A data e hora de entrega não podem ser anteriores ao momento atual.');
+          }
+        }
+      } catch (err) {
+        // se ocorrer erro na validação, não bloquear o salvamento (fallback)
+        console.warn('Erro ao validar data de entrega', err);
+      }
+    }
+    // Normalize status values coming from backend (Portuguese labels) to canonical keys
+    const statusMap = {
+      'Pedido Realizado': 'OrderPlaced',
+      'Pedido Confirmado': 'Confirmed',
+      'Concluído': 'Finished',
+    };
+    const canonicalStatus = statusMap[orderStatus] || orderStatus;
+
+    // Prefer phone from local state (populated from order or selection). If missing,
+    // fall back to in-memory customer or fetch the canonical record.
+    let customerCell = customerCellPhone || undefined;
+    let customerObj = (customers || []).find((c) => String(c.id) === String(selectedCustomer)) || null;
+    if (!customerCell && selectedCustomer) {
+      try {
+        const cres = await fetch(`/api/customers/${selectedCustomer}`);
+        if (cres.ok) {
+          const cdata = await cres.json();
+          customerObj = cdata || customerObj;
+          customerCell = cdata.cellPhone || cdata.CellPhone || cdata.cellphone || customerCell;
+          if (customerCell) setCustomerCellPhone(customerCell);
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+    const customerName = customerObj?.name || customerQuery || undefined;
+
     const payload = {
       OrderId: orderId ?? undefined,
       CustomerId: selectedCustomer ?? undefined,
+      Customer: {
+        Name: customerName,
+        CellPhone: customerCell,
+        Street: street || undefined,
+        Number: number || undefined,
+        Neighborhood: neighborhood || undefined,
+        City: city || undefined,
+        State: stateAddr || undefined,
+        Apartment: apartment ?? undefined,
+        NumberApartment: numberApartment || undefined,
+      },
+      // other fields
       Discount: Number(discount || 0),
       IsDelivery: !!isDelivery,
       DeliveryFee: Number(deliveryFee || 0),
       AmountPaid: Number(amountPaid || 0),
       Items: items.map((it) => ({ ProductId: it.productId, ProductName: it.productName, UnitPrice: Number(it.price), Quantity: Number(it.qty), Notes: it.notes || it.Notes || "" })),
       DeliveryDate: composedDeliveryDate,
-      OrderStatus: orderStatus,
-      // Optional address fields
-      Street: street || undefined,
-      Number: number || undefined,
-      Neighborhood: neighborhood || undefined,
-      State: stateAddr || undefined,
-      City: city || undefined,
-      Apartment: apartment ?? undefined,
-      NumberApartment: numberApartment || undefined,
+      // Send canonical status (and variants) to support different backend conventions
+      OrderStatus: canonicalStatus,
+      orderStatus: canonicalStatus,
+      status: canonicalStatus,
     };
 
     try {
+      console.log('Saving order payload:', payload);
       const res = await fetch("/api/orders/upsert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1501,8 +1629,13 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
         setOrders((prev) => prev.map((o) => (o.id === orderId ? saved : o)));
       } else {
         setOrders((prev) => [saved, ...prev]);
+        // keep the editor open and switch to the newly created order id
+        if (typeof setEditingOrderId === "function" && saved && (saved.id || saved.OrderId || saved.Id)) {
+          const newId = saved.id ?? saved.OrderId ?? saved.Id;
+          setEditingOrderId(newId);
+        }
       }
-      onClose();
+      // do not call onClose() so the user remains in the editor
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar pedido");
@@ -1522,8 +1655,8 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
   const printOrderKitchen = () => {
     const ids = orderId ? String(orderId) : "";
     const target = ids
-      ? `/api/orders/print?ids=${encodeURIComponent(ids)}&kitchen=true`
-      : `/api/orders/print?preview=true&kitchen=true`;
+      ? `/api/orders/print/kitchen?ids=${encodeURIComponent(ids)}`
+      : `/api/orders/print/kitchen?preview=true`;
     try {
       window.open(target, '_blank');
     } catch (err) {
@@ -1531,21 +1664,49 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
     }
   };
 
-  const sendWhatsapp = () => {
-    const customerName = customerQuery || 'Cliente';
-    const when = deliveryDate ? `${deliveryDate} ${deliveryTime || ''}`.trim() : '';
-    let msg = `Pedido de ${customerName}\n`;
-    if (when) msg += `Entrega: ${when}\n`;
-    msg += `Itens:\n`;
-    items.forEach((it) => {
-      msg += `- ${it.productName} x${it.qty} (${it.unitType || 'uni'}) - R$ ${((Number(it.qty) * Number(it.price)) || 0).toFixed(2)}\n`;
-      if (it.notes) msg += `  Obs: ${it.notes}\n`;
-    });
-    msg += `Total: R$ ${total.toFixed(2)}\n`;
-    if (Number(deliveryFee || 0) > 0) msg += `Taxa: R$ ${Number(deliveryFee).toFixed(2)}\n`;
-    if (Number(discount || 0) > 0) msg += `Desconto: R$ ${Number(discount).toFixed(2)}\n`;
+  const sendWhatsapp = async () => {
+    const statusLabel = OrderStatusDisplay[orderStatus] || orderStatus || 'Pedido';
+    const idLabel = orderId ? ` #${orderId}` : '';
+    const header = `${statusLabel}${idLabel}\n\n`;
 
-    const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    // Prefer phone from loaded state; fetch canonical customer only if missing
+    let phoneRaw = customerCellPhone || '';
+    if (!phoneRaw && selectedCustomer) {
+      try {
+        const cres = await fetch(`/api/customers/${selectedCustomer}`);
+        if (cres.ok) {
+          const cdata = await cres.json();
+          phoneRaw = cdata.cellPhone || cdata.CellPhone || cdata.cellphone || phoneRaw || '';
+          if (phoneRaw) setCustomerCellPhone(phoneRaw);
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+    if (!phoneRaw && selectedCustomer) {
+      const mem = (customers || []).find((c) => String(c.id) === String(selectedCustomer));
+      phoneRaw = mem?.cellPhone || mem?.CellPhone || phoneRaw || '';
+    }
+    const phone = String(phoneRaw || '').replace(/\D/g, '');
+    const customerLine = `Cliente: ${customerQuery || 'Cliente'}${phone ? ' - ' + phone : ''}\n\n`;
+
+    let itemsMsg = 'Itens\n';
+    items.forEach((it) => {
+      itemsMsg += `${it.qty}x ${it.productName}\n`;
+      if (it.notes) itemsMsg += `    *${it.notes}\n`;
+    });
+    itemsMsg += '\n';
+
+    const fmt = (v) => Number(v || 0).toFixed(2).replace('.', ',');
+    itemsMsg += `Subtotal: ${fmt(itemsSubtotal)}\n`;
+    itemsMsg += `Total: ${fmt(total)}\n\n`;
+
+    const deliveryType = isDelivery ? 'Entregar no endereço' : 'Retirar no balcão';
+    itemsMsg += `Tipo Entrega: ${deliveryType}\n`;
+
+    const msg = header + customerLine + itemsMsg;
+    if (!phone) return alert('Telefone do cliente não disponível para WhatsApp');
+    const url = `https://wa.me/55${phone}`;
     try {
       window.open(url, '_blank');
     } catch (err) {
@@ -1572,7 +1733,18 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
           {!orderId && customerResults && customerResults.length > 0 && customerQuery && (
             <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
               {customerResults.map((c) => (
-                <div key={c.id} onClick={() => { setCustomerQuery(c.name); setSelectedCustomer(c.id); setCustomerResults([]); }} className="p-2 hover:bg-pink-50 cursor-pointer">{c.name} - {c.cellPhone || "-"}</div>
+                <div
+                  key={c.id}
+                  onClick={() => {
+                    setCustomerQuery(c.name);
+                    setSelectedCustomer(c.id);
+                    setCustomerCellPhone(c.cellPhone || c.CellPhone || "");
+                    setCustomerResults([]);
+                  }}
+                  className="p-2 hover:bg-pink-50 cursor-pointer"
+                >
+                  {c.name} - {c.cellPhone || c.CellPhone || "-"}
+                </div>
               ))}
             </div>
           )}
@@ -1634,9 +1806,31 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
             </div>
             {productResults && productResults.length > 0 && productQuery && (
               <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
-                {productResults.map((p) => (
-                  <div key={p.id} onClick={() => addItemFromProduct(p)} className="p-2 hover:bg-pink-50 cursor-pointer">{p.name} — R$ {Number(p.price || 0).toFixed(2)}</div>
-                ))}
+                {(productResults || []).map((p) => {
+                  const existing = items.find((it) => it.productId === p.id);
+                  const qty = existing ? existing.qty || 0 : 0;
+                  return (
+                    <div
+                      key={p.id}
+                      onClick={existing ? undefined : () => addItemFromProduct(p)}
+                      className={
+                        `p-2 flex justify-between items-center ${
+                          existing ? 'bg-gray-50 text-gray-500 cursor-default' : 'hover:bg-pink-50 cursor-pointer'
+                        }`
+                      }
+                      role={existing ? 'option' : 'button'}
+                      aria-disabled={existing ? 'true' : 'false'}
+                    >
+                      <div>
+                        <span className="font-medium">{p.name}</span>
+                        <span className="text-sm text-gray-400 ml-2">— R$ {Number(p.price || 0).toFixed(2)}</span>
+                      </div>
+                      {existing ? (
+                        <div className="text-xs text-gray-400">Adicionado x{qty}</div>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -1724,12 +1918,40 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-12 gap-3">
-            <button onClick={saveOrder} className="col-span-4 w-full bg-pink-600 text-white px-4 py-3 rounded">Salvar Pedido</button>
-            <button onClick={printOrder} className="col-span-2 w-full bg-white border px-4 py-3 rounded text-pink-600">Imprimir</button>
-            <button onClick={printOrderKitchen} className="col-span-2 w-full bg-white border px-4 py-3 rounded text-pink-600">Imprimir Cozinha</button>
-            <button onClick={sendWhatsapp} className="col-span-2 w-full bg-green-50 border px-4 py-3 rounded text-green-600">Enviar Whatsapp</button>
-            <button onClick={onClose} className="col-span-2 w-full px-4 py-3 border rounded">Cancelar</button>
+          <div className="mt-4 flex gap-3">
+            <button onClick={saveOrder} style={{flex:2}} className="w-full bg-pink-600 text-white px-4 py-3 rounded">Salvar Pedido</button>
+
+            <div className="relative" style={{flex:1}}>
+              <button
+                onClick={() => setShowPrintOptionsOrderEditor((s) => !s)}
+                className="w-full bg-white border px-4 py-3 rounded text-pink-600 flex items-center justify-center gap-2"
+                title="Opções de impressão"
+              >
+                <span>Impressão</span>
+                <span aria-hidden>🖨️</span>
+              </button>
+
+              {showPrintOptionsOrderEditor && (
+                <div className="absolute right-0 bottom-full mb-2 w-44 bg-white border border-gray-200 rounded shadow p-2 z-40">
+                  <button
+                    onClick={() => { setShowPrintOptionsOrderEditor(false); printOrder(); }}
+                    className="w-full text-left bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+                  >
+                    Imprimir
+                  </button>
+
+                  <button
+                    onClick={() => { setShowPrintOptionsOrderEditor(false); printOrderKitchen(); }}
+                    className="w-full text-left mt-2 bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+                  >
+                    Imprimir Cozinha
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <button onClick={sendWhatsapp} style={{flex:1}} className="w-full bg-green-50 border px-4 py-3 rounded text-green-600">Enviar Whatsapp</button>
+            <button onClick={onClose} style={{flex:1}} className="w-full px-4 py-3 border rounded">Cancelar</button>
           </div>
         </div>
 
@@ -1830,6 +2052,7 @@ export default function App() {
           setCustomers={setCustomers}
           products={products}
           setProducts={setProducts}
+          setEditingOrderId={setEditingOrderId}
         />
       )}
     </div>
