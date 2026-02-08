@@ -229,7 +229,8 @@ export const CustomerEditor = ({ customerId, customers, setCustomers, onClose })
   );
 };
 
-const CustomersPage = ({ customers, setCustomers }) => {
+const CustomersPage = () => {
+  const [customers, setCustomers] = useState([]);
   const [editingCustomerId, setEditingCustomerId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);

@@ -1,8 +1,8 @@
 import React from "react";
 
-const Dashboard = ({ orders, customers, products }) => {
-  const totalOrders = orders.length;
-  const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+const Dashboard = ({ orders = [], customers = [], products = [] }) => {
+  const totalOrders = orders?.length || 0;
+  const totalRevenue = (orders || []).reduce((sum, o) => sum + (Number(o?.total) || 0), 0);
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
   return (

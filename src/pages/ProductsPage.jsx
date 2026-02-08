@@ -219,7 +219,8 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
   );
 };
 
-const ProductsPage = ({ products, setProducts }) => {
+const ProductsPage = () => {
+  const [products, setProducts] = useState([]);
   const [editingProductId, setEditingProductId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(15);

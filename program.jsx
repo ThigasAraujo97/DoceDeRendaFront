@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import ExternalDashboard from "./src/pages/Dashboard.jsx";
+// auth helper removed; logout handled by page reload
 
 // ===================== TYPES =====================
 // Customer, Product, Order, OrderStatus types (represented in JSDoc comments for plain JS)
@@ -51,22 +53,62 @@ const Modal = ({ isOpen, title, children, onClose, large }) => {
 };
 
 // ===================== SIDEBAR =====================
-const Sidebar = ({ page, setPage }) => (
-  <aside className="w-64 bg-pink-100 p-4 hidden md:block">
-    <h2 className="text-xl font-bold text-pink-700 mb-6">🍰 Thiago Araujo</h2>
-    {["Dashboard", "Pedidos", "Clientes", "Produtos"].map((p) => (
-      <button
-        key={p}
-        onClick={() => setPage(p)}
-        className={`block w-full text-left px-3 py-2 rounded mb-2 ${
-          page === p ? "bg-pink-300" : "hover:bg-pink-200"
-        }`}
-      >
-        {p}
-      </button>
-    ))}
-  </aside>
-);
+const Sidebar = ({ page, setPage }) => {
+  const user = typeof window !== "undefined" ? localStorage.getItem("authUser") : null;
+  const [theme, setTheme] = useState(typeof window !== 'undefined' ? (localStorage.getItem('theme') || 'pink') : 'pink');
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('theme-pink', 'theme-blue');
+      document.body.classList.add(`theme-${theme}`);
+      try { localStorage.setItem('theme', theme); } catch (e) { /* ignore */ }
+    }
+  }, [theme]);
+
+  return (
+    <aside className="w-64 bg-pink-100 p-4 hidden md:block">
+      <h2 className="text-xl font-bold text-pink-700 mb-6">🍰 Thiago Araujo</h2>
+      {['Dashboard', 'Pedidos', 'Clientes', 'Produtos'].map((p) => (
+        <button
+          key={p}
+          onClick={() => setPage(p)}
+          className={`block w-full text-left px-3 py-2 rounded mb-2 ${
+            page === p ? "bg-pink-300" : "hover:bg-pink-200"
+          }`}
+        >
+          {p}
+        </button>
+      ))}
+
+      <div className="mt-6 border-t pt-4">
+        <div className="text-sm text-gray-600 mb-2">{user ? `Olá, ${user}` : ''}</div>
+        <div className="flex gap-2 mb-3">
+          <div className="text-sm text-gray-600 mr-2 self-center">Tema:</div>
+          <button
+            onClick={() => setTheme('pink')}
+            className={`px-3 py-2 rounded ${theme === 'pink' ? 'bg-pink-300 text-pink-700' : 'bg-white border text-sm'}`}
+          >
+            Rosa
+          </button>
+
+          <button
+            onClick={() => setTheme('blue')}
+            className={`px-3 py-2 rounded ${theme === 'blue' ? 'bg-blue-800 text-white' : 'bg-white border text-sm'}`}
+          >
+            Azul
+          </button>
+        </div>
+
+        <button
+          onClick={() => window.location.reload()}
+          className="w-full text-left px-3 py-2 rounded bg-white border border-gray-200 hover:bg-gray-50 text-sm"
+        >
+          Sair
+        </button>
+      </div>
+    </aside>
+  );
+};
 
 // ===================== USE TABLE HOOK =====================
 const useTable = (data, pageSize = 5) => {
@@ -2030,7 +2072,7 @@ export default function App() {
       <Sidebar page={page} setPage={setPage} />
       <main className="flex-1 p-8 overflow-y-auto">
         {page === "Dashboard" && (
-          <Dashboard orders={orders} customers={customers} products={products} />
+          <ExternalDashboard orders={orders} customers={customers} products={products} />
         )}
         {page === "Pedidos" && (
           <OrdersPage orders={orders} openOrder={openOrder} />

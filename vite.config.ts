@@ -16,6 +16,12 @@ export default defineConfig({
         target: 'http://localhost:5150',
         changeOrigin: true,
       }
+      ,
+      // forward login route (backend exposes POST /login)
+      '/login': {
+        target: 'http://localhost:5150',
+        changeOrigin: true,
+      }
     }
   }
 })

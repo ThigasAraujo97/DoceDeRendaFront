@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "../hooks/useTable";
 import { parseBackendDateTime, statusBadge } from "../utils";
+import OrderEditor from "./OrderEditor";
 
 const OrdersPage = ({ openOrder }) => {
   const [orders, setOrders] = useState([]);
@@ -12,6 +13,9 @@ const OrdersPage = ({ openOrder }) => {
   const [dateTo, setDateTo] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showPrintOptions, setShowPrintOptions] = useState(false);
+  const [editingOrderId, setEditingOrderId] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const formatDateTime = (dateString) => {
     if (!dateString) return "-";
@@ -37,6 +41,30 @@ const OrdersPage = ({ openOrder }) => {
   };
 
   useEffect(() => { fetchAllOrders(); }, []);
+
+  useEffect(() => {
+    const fetchAux = async () => {
+      try {
+        const cres = await fetch('/api/customers/search');
+        if (cres.ok) {
+          const cdata = await cres.json();
+          setCustomers(Array.isArray(cdata) ? cdata : []);
+        }
+      } catch (err) {}
+
+      try {
+        const pres = await fetch('/api/products/all-product');
+        if (pres.ok) {
+          const pdata = await pres.json();
+          const normalized = Array.isArray(pdata)
+            ? pdata.map((p) => ({ ...p, productStatus: p.productStatus ?? p.status ?? null }))
+            : [];
+          setProducts(normalized);
+        }
+      } catch (err) {}
+    };
+    fetchAux();
+  }, []);
 
   useEffect(() => {
     const fetchFilteredOrders = async () => {
@@ -108,7 +136,7 @@ const OrdersPage = ({ openOrder }) => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-pink-700">Pedidos</h1>
         <button
-          onClick={() => openOrder(undefined)}
+          onClick={() => setEditingOrderId(0)}
           className="bg-pink-600 text-white px-4 py-2 rounded-xl hover:bg-pink-700"
         >
           + Novo Pedido
@@ -254,7 +282,7 @@ const OrdersPage = ({ openOrder }) => {
                 <tr
                   key={o.id}
                   className="border-t hover:bg-pink-50 cursor-pointer"
-                  onClick={() => openOrder(o.id)}
+                  onClick={() => setEditingOrderId(o.id)}
                 >
                   <td className="font-mono text-sm">#{o.id}</td>
                   <td>{o.customerName}</td>
@@ -284,6 +312,20 @@ const OrdersPage = ({ openOrder }) => {
           </button>
         ))}
       </div>
+
+      {editingOrderId !== null && (
+        <OrderEditor
+          orderId={editingOrderId === 0 ? null : editingOrderId}
+          orders={orders}
+          setOrders={setOrders}
+          onClose={() => setEditingOrderId(null)}
+          customers={customers}
+          setCustomers={setCustomers}
+          products={products}
+          setProducts={setProducts}
+          setEditingOrderId={setEditingOrderId}
+        />
+      )}
     </div>
   );
 };
