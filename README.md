@@ -96,7 +96,14 @@ DoceDeRendaFront/
 
 ### Onde consigo o token para liberar a API?
 
+**📖 [Leia o guia completo de configuração de token aqui: CONFIGURACAO_TOKEN.md](CONFIGURACAO_TOKEN.md)**
+
 O token é fornecido pelo backend da aplicação. Entre em contato com o administrador do sistema ou consulte a documentação do backend DoceDeRenda para obter seu token de acesso.
+
+**Resumo rápido:**
+1. Copie o arquivo: `cp .env.example .env`
+2. Edite `.env` e adicione seu token em `VITE_API_TOKEN`
+3. Reinicie o servidor: `npm run dev`
 
 ### O token é obrigatório?
 
