@@ -66,6 +66,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
   const [showProductEditorId, setShowProductEditorId] = useState(null);
   const [showCustomerEditorId, setShowCustomerEditorId] = useState(null);
   const [showPrintOptionsOrderEditor, setShowPrintOptionsOrderEditor] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     if (!orderId) return;
@@ -249,27 +250,6 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
     if (items.length === 0) return alert("Adicione ao menos um item");
 
     const composedDeliveryDate = deliveryDate && deliveryTime ? `${deliveryDate}T${deliveryTime}` : null;
-
-    if (composedDeliveryDate) {
-      try {
-        const dParts = (deliveryDate || "").split("-");
-        const tParts = (deliveryTime || "").split(":");
-        if (dParts.length === 3 && tParts.length >= 2) {
-          const y = Number(dParts[0]);
-          const m = Number(dParts[1]) - 1;
-          const d = Number(dParts[2]);
-          const hh = Number(tParts[0]);
-          const mm = Number(tParts[1]);
-          const composedDt = new Date(y, m, d, hh, mm);
-          const now = new Date();
-          if (composedDt < now) {
-            return alert('A data e hora de entrega não podem ser anteriores ao momento atual.');
-          }
-        }
-      } catch (err) {
-        console.warn('Erro ao validar data de entrega', err);
-      }
-    }
     // Canonical status: backend uses OrderPlaced/Confirmed/Finished
     const canonicalStatus = orderStatus || 'OrderPlaced';
 
@@ -328,13 +308,17 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       const saved = await res.json();
       if (orderId) {
         setOrders((prev) => prev.map((o) => (o.id === orderId ? saved : o)));
+        setSuccessMessage('Pedido salvo com sucesso');
       } else {
         setOrders((prev) => [saved, ...prev]);
+        setSuccessMessage('Pedido criado com sucesso');
         if (typeof setEditingOrderId === "function" && saved && (saved.id || saved.OrderId || saved.Id)) {
           const newId = saved.id ?? saved.OrderId ?? saved.Id;
           setEditingOrderId(newId);
         }
       }
+      // clear success message after a short delay
+      setTimeout(() => setSuccessMessage(""), 4000);
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar pedido");
@@ -380,32 +364,107 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       phoneRaw = mem?.cellPhone || mem?.CellPhone || phoneRaw || '';
     }
     const phone = String(phoneRaw || '').replace(/\D/g, '');
-    const customerLine = `Cliente: ${customerQuery || 'Cliente'}${phone ? ' - ' + phone : ''}\n\n`;
+    const customerLine = `*Cliente:* ${customerQuery || 'Cliente'}${phone ? ' - ' + phone : ''}\n\n`;
 
-    let itemsMsg = 'Itens\n';
-    items.forEach((it) => {
-      itemsMsg += `${it.qty}x ${it.productName}\n`;
-      if (it.notes) itemsMsg += `    *${it.notes}\n`;
-    });
-    itemsMsg += '\n';
+    // Try to fetch canonical items from API when we have an order id
+    let orderItems = null;
+    let orderFromApi = null;
+    if (orderId) {
+      try {
+        let res = await fetch(`/api/orders/${orderId}/items`);
+        if (res.ok) {
+          orderItems = await res.json();
+        } else {
+          // fallback to fetching the whole order which may include `items`
+          res = await fetch(`/api/orders/${orderId}`);
+          if (res.ok) {
+            orderFromApi = await res.json();
+            if (Array.isArray(orderFromApi.items)) orderItems = orderFromApi.items;
+          }
+        }
+      } catch (err) {
+        console.warn('Não foi possível buscar itens do pedido:', err);
+      }
+    }
+
+    // If API didn't return items, fall back to current editor items
+    const itemsList = (orderItems && orderItems.length > 0)
+      ? orderItems.map((it) => ({ productName: it.productName || it.ProductName || it.name, quantity: it.quantity || it.Quantity || it.qty, total: it.total != null ? it.total : (Number(it.unitPrice || it.UnitPrice || 0) * Number(it.quantity || it.Quantity || it.qty || 0)), notes: it.notes || it.Notes || '' }))
+      : items.map((it) => ({ productName: it.productName, quantity: Number(it.qty || 0), total: Number(it.qty || 0) * Number(it.price || 0), notes: it.notes || '' }));
 
     const fmt = (v) => Number(v || 0).toFixed(2).replace('.', ',');
-    itemsMsg += `Subtotal: ${fmt(itemsSubtotal)}\n`;
-    itemsMsg += `Total: ${fmt(total)}\n\n`;
 
-    const deliveryType = isDelivery ? 'Entregar no endereço' : 'Retirar no balcão';
-    itemsMsg += `Tipo Entrega: ${deliveryType}\n`;
+    // subtotal/total/paid values prefer API values when available
+    const subtotalVal = orderFromApi && typeof orderFromApi.total === 'number' ? orderFromApi.items?.reduce((s, x) => s + (Number(x.total || x.Total || 0)), 0) : itemsSubtotal;
+    const totalVal = orderFromApi && typeof orderFromApi.total === 'number' ? orderFromApi.total : total;
+    const amountPaidVal = orderFromApi && (orderFromApi.amountPaid != null) ? orderFromApi.amountPaid : amountPaid;
+    const discountVal = orderFromApi && (orderFromApi.discount != null) ? orderFromApi.discount : discount;
+    const deliveryFeeVal = orderFromApi && (orderFromApi.deliveryFee != null) ? orderFromApi.deliveryFee : deliveryFee;
 
-    const msg = statusLabel + idLabel + "\n\n" + customerLine + itemsMsg;
+    // delivery/address values prefer API when present
+    const isDeliveryVal = orderFromApi && typeof orderFromApi.isDelivery === 'boolean' ? orderFromApi.isDelivery : isDelivery;
+    const streetVal = orderFromApi && (orderFromApi.customerStreet || orderFromApi.CustomerStreet) ? (orderFromApi.customerStreet || orderFromApi.CustomerStreet) : street;
+    const numberVal = orderFromApi && (orderFromApi.customerNumber || orderFromApi.CustomerNumber) ? (orderFromApi.customerNumber || orderFromApi.CustomerNumber) : number;
+    const apartmentVal = orderFromApi && (orderFromApi.apartment != null) ? orderFromApi.apartment : apartment;
+    const numberApartmentVal = orderFromApi && (orderFromApi.customerNumberApartment || orderFromApi.CustomerNumberApartment) ? (orderFromApi.customerNumberApartment || orderFromApi.CustomerNumberApartment) : numberApartment;
+
+    // Build items block
+    let itemsMsg = '';
+    itemsList.forEach((it) => {
+      itemsMsg += `${it.quantity}x ${it.productName} - R$ ${fmt(it.total)}`;
+      if (it.notes) itemsMsg += ` (${it.notes})`;
+      itemsMsg += '\n';
+    });
+
+    // Build delivery/address lines
+    const deliveryType = isDeliveryVal ? 'Entrega' : 'Retirada';
+    let addressLine = '';
+    if (isDeliveryVal) {
+      const parts = [];
+      if (streetVal) parts.push(streetVal);
+      if (numberVal) parts.push('Número ' + numberVal);
+      if (apartmentVal && numberApartmentVal) parts.push('Condomínio ' + numberApartmentVal);
+      if (parts.length) addressLine = `\n*Endereço:* ${parts.join(', ')}`;
+    }
+
+    // Compose final message according to requested format
+    const header = `*Pedido a Confirmar${idLabel}*\n\n`;
+    const itemsHeader = `*Itens*\n`;
+
+    // Financial block: subtotal, optional delivery fee, optional discount, optional paid, total
+    let financial = `\n*Subtotal:* ${fmt(subtotalVal)}\n`;
+    if (deliveryFeeVal && Number(deliveryFeeVal) > 0) financial += `*Taxa de entrega:* ${fmt(deliveryFeeVal)}\n`;
+    if (discountVal && Number(discountVal) > 0) financial += `*Desconto:* ${fmt(discountVal)}\n`;
+    if (amountPaidVal && Number(amountPaidVal) > 0) financial += `*Pago:* ${fmt(amountPaidVal)}\n`;
+    financial += `*Total:* ${fmt(totalVal)}\n\n`;
+
+    const deliveryBlock = `*Tipo Entrega:* ${deliveryType}${addressLine}`;
+
+    let faltaLine = '';
+    if (amountPaidVal && Number(amountPaidVal) > 0) {
+      const calc = Number(totalVal || 0) + Number(deliveryFeeVal || 0) - Number(discountVal || 0) - Number(amountPaidVal || 0);
+      faltaLine = `*Falta Pagar:* R$ ${fmt(calc)}\n\n`;
+    }
+
+    const msg = header + `*Cliente:* ${customerQuery || 'Cliente'}\n\n` + itemsHeader + itemsMsg + financial + faltaLine + deliveryBlock;
+
     if (!phone) return alert('Telefone do cliente não disponível para WhatsApp');
-    const url = `https://wa.me/55${phone}`;
+    const url = `https://wa.me/55${phone}?text=${encodeURIComponent(msg)}`;
     try { window.open(url, '_blank'); } catch (err) { console.warn('Erro ao abrir WhatsApp', err); }
   };
 
   return (
-    <Modal isOpen={true} title={orderId ? "Editar Pedido" : "Novo Pedido"} onClose={onClose} large={true}>
-      <div className="space-y-3">
-        <div>
+    <>
+      {successMessage ? (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] md:w-2/3 lg:w-1/2 z-[9999]">
+          <div className="px-4 py-2 bg-green-50 border border-green-200 text-green-800 rounded text-center font-medium">
+            {successMessage}
+          </div>
+        </div>
+      ) : null}
+      <Modal isOpen={true} title={orderId ? "Editar Pedido" : "Novo Pedido"} onClose={onClose} large={true}>
+        <div className="space-y-3">
+          <div>
           <label className="block text-sm font-medium text-gray-700">Cliente</label>
           <div className="flex gap-2">
             <input
@@ -652,6 +711,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
         )}
       </div>
     </Modal>
+    </>
   );
 };
 
