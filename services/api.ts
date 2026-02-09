@@ -19,7 +19,7 @@ export async function apiGet<T>(url: string): Promise<T> {
   const res = await fetch(url, {
     headers: getHeaders(),
   });
-  if (!res.ok) throw new Error("Erro na API");
+  if (!res.ok) throw new Error(`Erro na API: ${res.status} ${res.statusText}`);
   return res.json();
 }
 
@@ -30,6 +30,6 @@ export async function apiPost<T>(url: string, body: any): Promise<T> {
     body: JSON.stringify(body),
   });
 
-  if (!res.ok) throw new Error("Erro na API");
+  if (!res.ok) throw new Error(`Erro na API: ${res.status} ${res.statusText}`);
   return res.json();
 }
