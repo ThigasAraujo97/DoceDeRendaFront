@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import OrdersPage from "./pages/OrdersPage.jsx";
 import CustomersPage from "./pages/CustomersPage.jsx";
 import ProductsPage from "./pages/ProductsPage.jsx";
+import Toast from "./components/Toast";
 
 function Denied() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Toast />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

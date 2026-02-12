@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toastError, toastSuccess } from "../utils/toast";
 import Modal from "../components/Modal";
 import { useTable } from "../hooks/useTable";
 
@@ -33,9 +34,9 @@ export const CustomerEditor = ({ customerId, customers, setCustomers, onClose })
           setCity(addressData.city || "");
           setApartment(addressData.apartment || false);
           setNumberApartment(addressData.numberApartment || "");
-        } catch (error) {
+          } catch (error) {
           console.error("Erro ao buscar cliente:", error);
-          alert("Erro ao carregar dados do cliente");
+          toastError("Erro ao carregar dados do cliente");
         } finally {
           setLoading(false);
         }
@@ -46,13 +47,13 @@ export const CustomerEditor = ({ customerId, customers, setCustomers, onClose })
 
   const saveCustomer = async () => {
     if (!name.trim()) {
-      alert("Nome é obrigatório");
+      toastError("Nome é obrigatório");
       return;
     }
 
     const phoneDigits = cellPhone.replace(/\D/g, "");
     if (phoneDigits.length !== 11) {
-      alert("Telefone deve conter exatamente 11 dígitos (DDD + número)");
+      toastError("Telefone deve conter exatamente 11 dígitos (DDD + número)");
       return;
     }
 
@@ -85,13 +86,13 @@ export const CustomerEditor = ({ customerId, customers, setCustomers, onClose })
         } else {
           setCustomers([...customers, newCustomer]);
         }
-        alert(customerId ? "Cliente atualizado!" : "Cliente criado!");
+        toastSuccess(customerId ? "Cliente atualizado com sucesso" : "Cliente criado com sucesso");
         onClose();
       } else {
-        alert("Erro na API");
+        toastError("Erro na API");
       }
     } catch {
-      alert("Erro na API");
+      toastError("Erro na API");
     }
   };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toastError, toastSuccess } from "../utils/toast";
 import Modal from "../components/Modal";
 import { ProductEditor } from "./ProductsPage";
 import { CustomerEditor } from "./CustomersPage";
@@ -137,9 +138,9 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
               }
           } catch (err) {}
         }
-      } catch (err) {
+        } catch (err) {
         console.error('Erro carregando pedido:', err);
-        alert('Erro ao carregar dados do pedido');
+        toastError('Erro ao carregar dados do pedido');
       } finally {
         if (!cancelled) setLoadingOrder(false);
       }
@@ -246,8 +247,8 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
   const remaining = Math.max(0, total - Number(amountPaid || 0));
 
   const saveOrder = async () => {
-    if (!customerQuery.trim()) return alert("Informe o nome do cliente");
-    if (items.length === 0) return alert("Adicione ao menos um item");
+    if (!customerQuery.trim()) return toastError("Informe o nome do cliente");
+    if (items.length === 0) return toastError("Adicione ao menos um item");
 
     const composedDeliveryDate = deliveryDate && deliveryTime ? `${deliveryDate}T${deliveryTime}` : null;
     // Canonical status: backend uses OrderPlaced/Confirmed/Finished
@@ -309,9 +310,11 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       if (orderId) {
         setOrders((prev) => prev.map((o) => (o.id === orderId ? saved : o)));
         setSuccessMessage('Pedido salvo com sucesso');
+        toastSuccess('Pedido salvo com sucesso');
       } else {
         setOrders((prev) => [saved, ...prev]);
         setSuccessMessage('Pedido criado com sucesso');
+        toastSuccess('Pedido criado com sucesso');
         if (typeof setEditingOrderId === "function" && saved && (saved.id || saved.OrderId || saved.Id)) {
           const newId = saved.id ?? saved.OrderId ?? saved.Id;
           setEditingOrderId(newId);
@@ -321,7 +324,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       setTimeout(() => setSuccessMessage(""), 4000);
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar pedido");
+      toastError("Erro ao salvar pedido");
     }
   };
 
@@ -448,7 +451,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
     const msg = header + `*Cliente:* ${customerQuery || 'Cliente'}\n\n` + itemsHeader + itemsMsg + financial + faltaLine + deliveryBlock;
 
-    if (!phone) return alert('Telefone do cliente não disponível para WhatsApp');
+    if (!phone) return toastError('Telefone do cliente não disponível para WhatsApp');
     const url = `https://wa.me/55${phone}?text=${encodeURIComponent(msg)}`;
     try { window.open(url, '_blank'); } catch (err) { console.warn('Erro ao abrir WhatsApp', err); }
   };

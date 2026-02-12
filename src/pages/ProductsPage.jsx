@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toastError, toastSuccess } from "../utils/toast";
 import Modal from "../components/Modal";
 import { useTable } from "../hooks/useTable";
 import { productStatusLabel } from "../utils";
@@ -33,7 +34,7 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
   }, []);
 
   const createCategory = async () => {
-    if (!newCategoryName.trim()) return alert("Nome da categoria é obrigatório");
+    if (!newCategoryName.trim()) return toastError("Nome da categoria é obrigatório");
     setCreatingCategory(true);
     try {
       const res = await fetch("/api/products/upsert-category", {
@@ -50,7 +51,7 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
       setShowAddCategory(false);
     } catch (err) {
       console.error("Erro criando categoria:", err);
-      alert("Erro ao criar categoria");
+      toastError("Erro ao criar categoria");
     } finally {
       setCreatingCategory(false);
     }
@@ -58,7 +59,7 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
 
   const saveProduct = async () => {
     if (!name.trim() || !price || !categoryId) {
-      alert("Nome, preço e categoria são obrigatórios");
+      toastError("Nome, preço e categoria são obrigatórios");
       return;
     }
 
@@ -86,13 +87,13 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
         } else {
           setProducts([...products, newProduct]);
         }
-        alert(productId ? "Produto atualizado!" : "Produto criado!");
+        toastSuccess(productId ? "Produto atualizado com sucesso" : "Produto criado com sucesso");
         onClose();
       } else {
-        alert("Erro na API");
+        toastError("Erro na API");
       }
     } catch {
-      alert("Erro na API");
+      toastError("Erro na API");
     }
   };
 
