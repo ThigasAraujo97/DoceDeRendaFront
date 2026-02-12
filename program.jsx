@@ -67,7 +67,7 @@ const Sidebar = ({ page, setPage }) => {
 
   return (
     <aside className="w-64 bg-pink-100 p-4 hidden md:block">
-      <h2 className="text-xl font-bold text-pink-700 mb-6">🍰 Thiago Araujo</h2>
+      <h2 className="text-xl font-bold text-pink-700 mb-6">🍰 Doce De Renda</h2>
       {['Dashboard', 'Pedidos', 'Clientes', 'Produtos'].map((p) => (
         <button
           key={p}

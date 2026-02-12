@@ -14,7 +14,7 @@ function formatDeliveryDate(value) {
     const mm = pad(d.getMinutes());
     const day = pad(d.getDate());
     const month = pad(d.getMonth() + 1);
-    return `${hh}:${mm} ${day}/${month}`;
+    return `${day}/${month} ${hh}:${mm}`;
   } catch (e) {
     return '';
   }

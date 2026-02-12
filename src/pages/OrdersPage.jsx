@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toastError } from "../utils/toast";
 import { useTable } from "../hooks/useTable";
 import { parseBackendDateTime, statusBadge } from "../utils";
 import OrderEditor from "./OrderEditor";
@@ -34,7 +35,7 @@ const OrdersPage = ({ openOrder }) => {
       setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
-      alert("Erro ao carregar pedidos");
+      toastError("Erro ao carregar pedidos");
     } finally {
       setLoading(false);
     }
@@ -104,28 +105,28 @@ const OrdersPage = ({ openOrder }) => {
   const table = useTable(orders, pageSize);
 
   const printForKitchen = () => {
-    try {
-      if (!orders || orders.length === 0) return alert("Nenhum pedido para imprimir");
+      try {
+        if (!orders || orders.length === 0) return toastError("Nenhum pedido para imprimir");
       const ids = orders.map((o) => o.id).filter(Boolean).join(",");
-      if (!ids) return alert("Nenhum pedido válido para imprimir");
+        if (!ids) return toastError("Nenhum pedido válido para imprimir");
       const target = `/api/orders/print/kitchen?ids=${encodeURIComponent(ids)}`;
       window.open(target, "_blank");
     } catch (e) {
       console.error(e);
-      alert("Erro ao gerar impressão para cozinha");
+        toastError("Erro ao gerar impressão para cozinha");
     }
   };
 
   const printFiltered = () => {
-    try {
-      if (!orders || orders.length === 0) return alert("Nenhum pedido para imprimir");
+      try {
+        if (!orders || orders.length === 0) return toastError("Nenhum pedido para imprimir");
       const ids = orders.map((o) => o.id).filter(Boolean).join(",");
-      if (!ids) return alert("Nenhum pedido válido para imprimir");
+        if (!ids) return toastError("Nenhum pedido válido para imprimir");
       const target = `/api/orders/print?ids=${encodeURIComponent(ids)}`;
       window.open(target, "_blank");
     } catch (e) {
       console.error(e);
-      alert("Erro ao gerar impressão");
+        toastError("Erro ao gerar impressão");
     }
   };
 
