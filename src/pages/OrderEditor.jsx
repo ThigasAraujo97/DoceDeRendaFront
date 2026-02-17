@@ -38,6 +38,8 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
   const [productQuery, setProductQuery] = useState("");
   const [productResults, setProductResults] = useState(products || []);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const [discount, setDiscount] = useState(editingOrder?.discount || 0);
   const [deliveryFee, setDeliveryFee] = useState(editingOrder?.deliveryFee || 0);
@@ -184,6 +186,19 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
     return () => clearTimeout(t);
   }, [productQuery, products]);
 
+  // derive categories from products list
+  useEffect(() => {
+    try {
+      const src = products || [];
+      const cats = Array.from(new Set(src.map((p) => (p.categoryName || (p.category && (p.category.name || p.categoryName)) || 'Sem Categoria')))).filter(Boolean);
+      setCategories(cats);
+      // If currently selected category disappears, reset to all
+      if (selectedCategory !== 'all' && !cats.includes(selectedCategory)) setSelectedCategory('all');
+    } catch (err) {
+      setCategories([]);
+    }
+  }, [products]);
+
   useEffect(() => {
     if (!isDelivery || !selectedCustomer) return;
     let cancelled = false;
@@ -241,6 +256,13 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
   const updateItem = (idx, patch) => setItems((s) => s.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
   const removeItem = (idx) => setItems((s) => s.filter((_, i) => i !== idx));
+
+  // filter productResults by selected category (derived from products)
+  const filteredProductResults = (productResults || []).filter((p) => {
+    if (!selectedCategory || selectedCategory === 'all') return true;
+    const cat = p.categoryName || (p.category && (p.category.name || p.categoryName)) || 'Sem Categoria';
+    return String(cat) === String(selectedCategory);
+  });
 
   const itemsSubtotal = items.reduce((sum, it) => sum + (Number(it.qty || 0) * Number(it.price || 0)), 0);
   const total = Math.max(0, itemsSubtotal - Number(discount || 0) + Number(deliveryFee || 0));
@@ -550,13 +572,34 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
           <h3 className="text-sm font-semibold text-gray-700 mb-3">Itens</h3>
 
           <div className="mb-3">
+            {categories && categories.length > 0 && (
+              <div className="mb-2 flex gap-2 overflow-x-auto">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-3 py-1 rounded ${selectedCategory === 'all' ? 'bg-pink-600 text-white' : 'bg-pink-50 text-pink-700'}`}>
+                  Todas
+                </button>
+                {categories.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setSelectedCategory(c)}
+                    className={`px-3 py-1 rounded ${String(selectedCategory) === String(c) ? 'bg-pink-600 text-white' : 'bg-pink-50 text-pink-700'}`}>
+                    {c}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="flex gap-2">
               <input type="text" value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Buscar produto..." className="flex-1 px-3 py-2 border rounded" />
               <button onClick={() => setShowProductEditorId(0)} className="px-3 py-2 bg-pink-100 rounded">+ Produto</button>
             </div>
-            {productResults && productResults.length > 0 && productQuery && (
+
+            {(filteredProductResults && filteredProductResults.length > 0) && (productQuery || selectedCategory !== 'all') && (
               <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
-                {(productResults || []).map((p) => {
+                {(filteredProductResults || []).map((p) => {
                   const existing = items.find((it) => it.productId === p.id);
                   const qty = existing ? existing.qty || 0 : 0;
                   return (
