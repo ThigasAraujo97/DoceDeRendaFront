@@ -57,6 +57,7 @@ export function AuthProvider({ children }) {
           setToken(null);
           setRoles([]);
           localStorage.removeItem(EXP_KEY);
+          try { window.location.replace('/login'); } catch (e) {}
         }, ms);
       } else if (exp && exp <= now) {
         // expired already
@@ -65,6 +66,7 @@ export function AuthProvider({ children }) {
         setToken(null);
         setRoles([]);
         localStorage.removeItem(EXP_KEY);
+        try { window.location.replace('/login'); } catch (e) {}
       }
     } catch (e) {
       // ignore scheduling errors
@@ -105,6 +107,7 @@ export function AuthProvider({ children }) {
     setRoles([]);
     setExpiresAt(null);
     localStorage.removeItem(EXP_KEY);
+    try { window.location.replace('/login'); } catch (e) {}
   };
 
   const value = { user, token, roles, login, logout, isAuthenticated: !!token };
