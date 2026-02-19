@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthProvider.jsx";
+import { useAuth } from "./auth/AuthProvider.jsx";
 import LoginPage from "./auth/LoginPage.jsx";
 import RegisterPage from "./auth/RegisterPage.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
@@ -22,6 +23,10 @@ function Denied() {
   );
 }
 
+function HomeRedirect() {
+  return <Navigate to="/login" replace />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -37,10 +42,11 @@ export default function App() {
               <Route path="/pedidos" element={<OrdersPage />} />
               <Route path="/clientes" element={<CustomersPage />} />
               <Route path="/produtos" element={<ProductsPage />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              
             </Route>
           </Route>
 
+          <Route path="/" element={<HomeRedirect />} />
           <Route path="/denied" element={<Denied />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
