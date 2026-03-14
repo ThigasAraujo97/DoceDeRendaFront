@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toastError, toastSuccess } from "../utils/toast";
 import Modal from "../components/Modal";
 import { useTable } from "../hooks/useTable";
@@ -237,6 +237,8 @@ const CustomersPage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [pageSize, setPageSize] = useState(15);
+  const [autoSize, setAutoSize] = useState(true);
+  const tableWrapperRef = useRef(null);
 
   useEffect(() => {
     const fetchAllCustomers = async () => {
@@ -281,6 +283,51 @@ const CustomersPage = () => {
   const table = useTable(searchResults, pageSize);
 
   useEffect(() => { table.setCurrentPage(1); }, [pageSize]);
+  const paginationRef = useRef(null);
+
+  useEffect(() => {
+    let rafId = null;
+    const computePageSize = () => {
+      if (!autoSize) return;
+      const tableEl = tableWrapperRef.current;
+      if (!tableEl) return;
+
+      const measure = () => {
+        // try to measure a real row height if available
+        const firstRow = tableEl.querySelector("tbody tr");
+        const rowHeight = firstRow
+          ? Math.ceil(firstRow.getBoundingClientRect().height)
+          : 48;
+
+        const top = tableEl.getBoundingClientRect().top;
+        const paginationHeight = paginationRef.current
+          ? paginationRef.current.getBoundingClientRect().height
+          : 64;
+        const extraReserve = 24; // small breathing room
+
+        const available = Math.max(
+          120,
+          window.innerHeight - top - paginationHeight - extraReserve
+        );
+        const newSize = Math.max(5, Math.floor(available / rowHeight));
+        setPageSize((prev) => (prev === newSize ? prev : newSize));
+      };
+
+      // measure on next paint to ensure layout completed
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(measure);
+    };
+
+    // initial compute and listeners
+    computePageSize();
+    const onResize = () => computePageSize();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [autoSize, searchResults, editingCustomerId]);
 
   return (
     <div>
@@ -304,7 +351,7 @@ const CustomersPage = () => {
           />
           <select
             value={pageSize}
-            onChange={(e) => setPageSize(parseInt(e.target.value, 10))}
+            onChange={(e) => { setAutoSize(false); setPageSize(parseInt(e.target.value, 10)); }}
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
             title="Itens por página"
           >
@@ -312,9 +359,17 @@ const CustomersPage = () => {
             <option value={25}>25</option>
             <option value={100}>100</option>
           </select>
+          <button
+            onClick={() => setAutoSize(true)}
+            className={`px-3 py-2 rounded text-sm ml-2 ${autoSize ? 'bg-pink-600 text-white' : 'bg-pink-100 text-pink-700 hover:bg-pink-200'}`}
+            title="Ativar ajuste automático"
+          >
+            Auto
+          </button>
         </div>
       </div>
       <div className="bg-white rounded-2xl shadow overflow-x-auto">
+        <div ref={tableWrapperRef}>
         <table className="w-full text-sm">
           <thead className="bg-pink-100 text-pink-700">
             <tr>
@@ -340,6 +395,7 @@ const CustomersPage = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
       <div className="flex justify-center gap-2 mt-4">
         {Array.from({ length: table.totalPages }, (_, i) => i + 1).map((page) => (
