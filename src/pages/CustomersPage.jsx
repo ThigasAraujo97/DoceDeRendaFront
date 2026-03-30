@@ -369,9 +369,12 @@ const CustomersPage = () => {
         </div>
       </div>
       <div className="bg-white rounded-2xl shadow overflow-x-auto">
-        <div ref={tableWrapperRef}>
+        <div
+          ref={tableWrapperRef}
+          style={{ maxHeight: "calc(100vh - 260px)", overflowY: "auto" }}
+        >
         <table className="w-full text-sm">
-          <thead className="bg-pink-100 text-pink-700">
+          <thead className="bg-pink-100 text-pink-700 sticky top-0 z-10">
             <tr>
               <th className="px-4 py-3 text-left">Nome</th>
               <th className="px-4 py-3 text-left">Celular</th>
