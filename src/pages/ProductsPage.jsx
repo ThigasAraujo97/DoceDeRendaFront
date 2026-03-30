@@ -105,35 +105,35 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
     >
       <div className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Nome</label>
+          <label className="block text-sm font-medium text-slate-300">Nome</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nome do produto"
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Preço</label>
+          <label className="block text-sm font-medium text-slate-300">Preço</label>
           <input
             type="number"
             step="0.01"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="Preço"
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Categoria</label>
+          <label className="block text-sm font-medium text-slate-300">Categoria</label>
           {loading ? (
-            <div className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-gray-500">Carregando categorias...</div>
+            <div className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-slate-400">Carregando categorias...</div>
           ) : (
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white"
             >
               <option value="">Selecione uma categoria</option>
               {categories && categories.length > 0 ? (
@@ -155,7 +155,7 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
           <button
             type="button"
             onClick={() => setShowAddCategory((s) => !s)}
-            className="text-sm text-pink-600 hover:text-pink-800"
+            className="text-sm text-blue-400 hover:text-pink-800"
           >
             {showAddCategory ? "Cancelar" : "+ Adicionar categoria"}
           </button>
@@ -167,11 +167,11 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
                 placeholder="Nome da nova categoria"
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white"
               />
               <div>
-                <label className="block text-sm font-medium text-gray-700">Tipo de unidade</label>
-                <select value={newCategoryUnitType} onChange={(e) => setNewCategoryUnitType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <label className="block text-sm font-medium text-slate-300">Tipo de unidade</label>
+                <select value={newCategoryUnitType} onChange={(e) => setNewCategoryUnitType(e.target.value)} className="w-full px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white">
                   <option value="Unit">Unidade (Unit)</option>
                   <option value="Kg">Quilograma (Kg)</option>
                 </select>
@@ -181,7 +181,7 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
                   type="button"
                   onClick={createCategory}
                   disabled={creatingCategory}
-                  className="flex-1 bg-pink-600 text-white px-3 py-2 rounded text-sm hover:bg-pink-700"
+                  className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700"
                 >
                   {creatingCategory ? "Criando..." : "Criar categoria"}
                 </button>
@@ -199,11 +199,11 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <label className="block text-sm font-medium text-slate-300">Status</label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white"
           >
             <option value="Activated">Ativo</option>
             <option value="Removed">Removido</option>
@@ -211,7 +211,7 @@ export const ProductEditor = ({ productId, products, setProducts, onClose }) => 
         </div>
         <button
           onClick={saveProduct}
-          className="w-full bg-pink-600 text-white px-4 py-2 rounded font-semibold hover:bg-pink-700"
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700"
         >
           Salvar Produto
         </button>
@@ -323,10 +323,10 @@ const ProductsPage = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-pink-700">Produtos</h1>
+        <h1 className="text-2xl font-bold text-slate-200">Produtos</h1>
         <button
           onClick={() => setEditingProductId(0)}
-          className="bg-pink-600 text-white px-4 py-2 rounded-xl hover:bg-pink-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
         >
           + Novo Produto
         </button>
@@ -339,7 +339,7 @@ const ProductsPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             disabled={!!statusFilter}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:bg-gray-100 disabled:text-gray-500"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-slate-400"
           />
           <select
             value={statusFilter}
@@ -347,7 +347,7 @@ const ProductsPage = () => {
               setStatusFilter(e.target.value);
               setSearchTerm("");
             }}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-700 text-white"
             title="Filtrar por status"
           >
             <option value="">Todos os status</option>
@@ -357,7 +357,7 @@ const ProductsPage = () => {
           <select
             value={pageSize}
             onChange={(e) => setPageSize(parseInt(e.target.value, 10))}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-700 text-white"
             title="Itens por página"
           >
             <option value={15}>15</option>
@@ -366,9 +366,9 @@ const ProductsPage = () => {
           </select>
         </div>
       </div>
-      <div className="bg-white rounded-2xl shadow overflow-x-auto">
+      <div className="bg-slate-800 rounded-2xl shadow overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-pink-100 text-pink-700">
+          <thead className="bg-slate-700 text-slate-200">
             <tr>
               <th className="px-4 py-3 text-left">Nome</th>
               <th className="px-4 py-3 text-left">Categoria</th>
@@ -379,15 +379,15 @@ const ProductsPage = () => {
           </thead>
           <tbody>
             {table.pageData.map((p) => (
-              <tr key={p.id} className="border-t hover:bg-pink-50">
+              <tr key={p.id} className="border-t hover:bg-slate-700">
                 <td className="px-4 py-3">{p.name}</td>
-                <td className="px-4 py-3 text-gray-600">{p.categoryName || "-"}</td>
-                <td className="px-4 py-3 text-gray-600">{productStatusLabel(p.productStatus ?? p.status)}</td>
+                <td className="px-4 py-3 text-slate-400">{p.categoryName || "-"}</td>
+                <td className="px-4 py-3 text-slate-400">{productStatusLabel(p.productStatus ?? p.status)}</td>
                 <td className="px-4 py-3 text-right font-semibold">R$ {Number(p.price).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => setEditingProductId(p.id)}
-                    className="text-pink-600 hover:text-pink-800 font-semibold text-sm"
+                    className="text-blue-400 hover:text-pink-800 font-semibold text-sm"
                   >
                     Editar
                   </button>
@@ -404,8 +404,8 @@ const ProductsPage = () => {
             onClick={() => table.setCurrentPage(page)}
             className={`px-3 py-1 rounded ${
               table.currentPage === page
-                ? "bg-pink-600 text-white"
-                : "bg-pink-100 hover:bg-pink-200"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-700 hover:bg-slate-600"
             }`}
           >
             {page}

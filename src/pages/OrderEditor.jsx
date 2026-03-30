@@ -490,20 +490,20 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
       <Modal isOpen={true} title={orderId ? "Editar Pedido" : "Novo Pedido"} onClose={onClose} large={true}>
         <div className="space-y-3">
           <div>
-          <label className="block text-sm font-medium text-gray-700">Cliente</label>
+          <label className="block text-sm text-slate-300 font-medium text-slate-300">Cliente</label>
           <div className="flex gap-2">
             <input
               type="text"
               value={customerQuery}
               onChange={(e) => { if (!orderId) { setCustomerQuery(e.target.value); setSelectedCustomer(null); } }}
               placeholder="Buscar ou digitar nome do cliente"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="flex-1 px-3 py-2 border border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white placeholder-slate-400"
               disabled={!!orderId}
             />
-            <button onClick={() => setShowCustomerEditorId(0)} className="px-3 py-2 bg-pink-100 rounded">+ Cliente</button>
+            <button onClick={() => setShowCustomerEditorId(0)} className="px-3 py-2 bg-blue-100 rounded">+ Cliente</button>
           </div>
           {!orderId && customerResults && customerResults.length > 0 && customerQuery && (
-            <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
+            <div className="border border-slate-600 bg-slate-800 mt-1 max-h-40 overflow-y-auto">
               {customerResults.map((c) => (
                 <div
                   key={c.id}
@@ -513,7 +513,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                     setCustomerCellPhone(c.cellPhone || c.CellPhone || "");
                     setCustomerResults([]);
                   }}
-                  className="p-2 hover:bg-pink-50 cursor-pointer"
+                  className="p-2 hover:bg-blue-50 cursor-pointer"
                 >
                   {c.name} - {c.cellPhone || c.CellPhone || "-"}
                 </div>
@@ -523,22 +523,22 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
         </div>
 
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
             <input type="checkbox" checked={isDelivery} onChange={(e) => setIsDelivery(e.target.checked)} className="w-4 h-4" /> Entrega?
           </label>
           <div className="mt-2 grid grid-cols-3 gap-2 items-end">
             <div>
-              <label className="block text-sm">Data de entrega</label>
-              <input type="date" value={deliveryDate} onChange={(e) => setDeliveryDate(e.target.value)} className="w-full px-3 py-2 border rounded" />
+              <label className="block text-sm text-slate-300">Data de entrega</label>
+              <input type="date" value={deliveryDate} onChange={(e) => setDeliveryDate(e.target.value)} className="w-full px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
             </div>
             <div>
-              <label className="block text-sm">Hora de entrega</label>
-              <input type="time" value={deliveryTime} onChange={(e) => setDeliveryTime(e.target.value)} className="w-full px-3 py-2 border rounded" />
+              <label className="block text-sm text-slate-300">Hora de entrega</label>
+              <input type="time" value={deliveryTime} onChange={(e) => setDeliveryTime(e.target.value)} className="w-full px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
             </div>
             <div>
-              <label className="block text-sm">Status</label>
+              <label className="block text-sm text-slate-300">Status</label>
               <div className="flex items-center gap-3">
-                <select value={orderStatus} onChange={(e) => setOrderStatus(e.target.value)} className="w-full px-3 py-2 border rounded">
+                <select value={orderStatus} onChange={(e) => setOrderStatus(e.target.value)} className="w-full px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white">
                   <option value="OrderPlaced">Pedido Realizado</option>
                   <option value="Confirmed">Confirmado</option>
                   <option value="Finished">Concluído</option>
@@ -549,19 +549,19 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
           </div>
           {isDelivery && (
             <div className="grid grid-cols-2 gap-2 mt-2">
-              <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Rua" className="px-3 py-2 border rounded" />
-              <input type="text" value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Número" className="px-3 py-2 border rounded" />
-              <input type="text" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="Bairro" className="px-3 py-2 border rounded" />
-              <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Cidade" className="px-3 py-2 border rounded" />
-              <input type="text" value={stateAddr} onChange={(e) => setStateAddr(e.target.value)} placeholder="Estado" className="px-3 py-2 border rounded" />
+              <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Rua" className="px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
+              <input type="text" value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Número" className="px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
+              <input type="text" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="Bairro" className="px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
+              <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Cidade" className="px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
+              <input type="text" value={stateAddr} onChange={(e) => setStateAddr(e.target.value)} placeholder="Estado" className="px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
                 <div className="col-span-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
                     <input type="checkbox" checked={apartment} onChange={(e) => setApartment(e.target.checked)} className="w-4 h-4" /> É apartamento
                   </label>
                 </div>
                 {apartment && (
                   <div className="col-span-2">
-                    <input type="text" value={numberApartment} onChange={(e) => setNumberApartment(e.target.value)} placeholder="Número do apartamento" className="w-full px-3 py-2 border rounded" />
+                    <input type="text" value={numberApartment} onChange={(e) => setNumberApartment(e.target.value)} placeholder="Número do apartamento" className="w-full px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
                   </div>
                 )}
             </div>
@@ -569,7 +569,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
         </div>
 
         <div className="border-t pt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Itens</h3>
+          <h3 className="text-sm font-semibold text-slate-200 mb-3">Itens</h3>
 
           <div className="mb-3">
             {categories && categories.length > 0 && (
@@ -577,7 +577,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                 <button
                   type="button"
                   onClick={() => setSelectedCategory('all')}
-                  className={`px-3 py-1 rounded ${selectedCategory === 'all' ? 'bg-pink-600 text-white' : 'bg-pink-50 text-pink-700'}`}>
+                  className={`px-3 py-1 rounded ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700'}`}>
                   Todas
                 </button>
                 {categories.map((c) => (
@@ -585,7 +585,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                     key={c}
                     type="button"
                     onClick={() => setSelectedCategory(c)}
-                    className={`px-3 py-1 rounded ${String(selectedCategory) === String(c) ? 'bg-pink-600 text-white' : 'bg-pink-50 text-pink-700'}`}>
+                    className={`px-3 py-1 rounded ${String(selectedCategory) === String(c) ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700'}`}>
                     {c}
                   </button>
                 ))}
@@ -593,12 +593,12 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
             )}
 
             <div className="flex gap-2">
-              <input type="text" value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Buscar produto..." className="flex-1 px-3 py-2 border rounded" />
-              <button onClick={() => setShowProductEditorId(0)} className="px-3 py-2 bg-pink-100 rounded">+ Produto</button>
+              <input type="text" value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Buscar produto..." className="flex-1 px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
+              <button onClick={() => setShowProductEditorId(0)} className="px-3 py-2 bg-blue-100 rounded">+ Produto</button>
             </div>
 
             {(filteredProductResults && filteredProductResults.length > 0) && (productQuery || selectedCategory !== 'all') && (
-              <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
+              <div className="border border-slate-600 bg-slate-800 mt-1 max-h-40 overflow-y-auto">
                 {(filteredProductResults || []).map((p) => {
                   const existing = items.find((it) => it.productId === p.id);
                   const qty = existing ? existing.qty || 0 : 0;
@@ -608,7 +608,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                       onClick={existing ? undefined : () => addItemFromProduct(p)}
                       className={
                         `p-2 flex justify-between items-center ${
-                          existing ? 'bg-gray-50 text-gray-500 cursor-default' : 'hover:bg-pink-50 cursor-pointer'
+                          existing ? 'bg-gray-50 text-gray-500 cursor-default' : 'hover:bg-blue-50 cursor-pointer'
                         }`
                       }
                       role={existing ? 'option' : 'button'}
@@ -619,7 +619,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                         <span className="text-sm text-gray-400 ml-2">— R$ {Number(p.price || 0).toFixed(2)}</span>
                       </div>
                       {existing ? (
-                        <div className="text-xs text-gray-400">Adicionado x{qty}</div>
+                        <div className="text-xs text-slate-500">Adicionado x{qty}</div>
                       ) : null}
                     </div>
                   );
@@ -628,32 +628,32 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
             )}
           </div>
 
-          <div className="p-3 bg-white border rounded space-y-3">
+          <div className="p-3 bg-slate-800 border border-slate-600 rounded space-y-3">
             {items.length === 0 ? (
-              <div className="text-sm text-gray-500">Nenhum item adicionado</div>
+              <div className="text-sm text-slate-400">Nenhum item adicionado</div>
             ) : (
               items.map((it, idx) => (
                 <div key={idx} className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center justify-between gap-4">
-                      <div className="font-semibold text-gray-800 text-lg">{it.productName}</div>
+                      <div className="font-semibold text-slate-100 text-lg">{it.productName}</div>
 
                       <div className="flex items-center gap-4">
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">Qtd</div>
-                          <input type="number" className="w-20 px-2 py-1 border rounded text-center" value={it.qty} min={1} onChange={(e) => updateItem(idx, { qty: Number(e.target.value) })} />
+                          <div className="text-xs text-slate-400">Qtd</div>
+                          <input type="number" className="w-20 px-2 py-1 border border-slate-600 rounded text-center bg-slate-700 text-white" value={it.qty} min={1} onChange={(e) => updateItem(idx, { qty: Number(e.target.value) })} />
                         </div>
 
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">Unit</div>
+                          <div className="text-xs text-slate-400">Unit</div>
                           <div className="flex items-center gap-2">
                             <div className="text-right font-medium">R$ {Number(it.price).toFixed(2)}</div>
-                            <span className="px-2 py-1 text-sm bg-pink-50 text-pink-600 rounded">{(String(it.unitType || '').toLowerCase().includes('kg')) ? 'kg' : 'uni'}</span>
+                            <span className="px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded">{(String(it.unitType || '').toLowerCase().includes('kg')) ? 'kg' : 'uni'}</span>
                           </div>
                         </div>
 
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">Subtotal</div>
+                          <div className="text-xs text-slate-400">Subtotal</div>
                           <div className="font-medium">R$ {(Number(it.qty) * Number(it.price)).toFixed(2)}</div>
                         </div>
 
@@ -664,8 +664,8 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                     </div>
 
                     <div className="mt-2">
-                      <label className="text-xs text-gray-500">Observação</label>
-                      <input type="text" value={it.notes || ""} onChange={(e) => updateItem(idx, { notes: e.target.value })} placeholder="Observação do item" className="w-full mt-1 px-2 py-1 border rounded text-sm" />
+                      <label className="text-xs text-slate-400">Observação</label>
+                      <input type="text" value={it.notes || ""} onChange={(e) => updateItem(idx, { notes: e.target.value })} placeholder="Observação do item" className="w-full mt-1 px-2 py-1 border border-slate-600 rounded text-sm bg-slate-700 text-white" />
                     </div>
                   </div>
                 </div>
@@ -675,49 +675,49 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
 
           <div className="mt-4 md:flex md:items-stretch md:justify-between md:gap-4">
             <div className="flex-1">
-              <div className="border rounded p-4 bg-gray-50 space-y-3 max-w-xl h-full">
+              <div className="border border-slate-600 rounded p-4 bg-slate-700 space-y-3 max-w-xl h-full">
                 <div>
-                  <label className="block text-sm">Pagamento realizado</label>
+                  <label className="block text-sm text-slate-300">Pagamento realizado</label>
                   <div className="flex gap-2 items-center">
-                    <input type="number" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="flex-1 px-3 py-2 border rounded" />
+                    <input type="number" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="flex-1 px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => setAmountPaid(Number(total.toFixed(2)))} className="px-3 py-1 bg-pink-100 text-pink-700 rounded text-sm">Total</button>
-                      <button type="button" onClick={() => setAmountPaid(Number((total / 2).toFixed(2)))} className="px-3 py-1 bg-pink-100 text-pink-700 rounded text-sm">50%</button>
+                      <button type="button" onClick={() => setAmountPaid(Number(total.toFixed(2)))} className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">Total</button>
+                      <button type="button" onClick={() => setAmountPaid(Number((total / 2).toFixed(2)))} className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">50%</button>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm">Desconto</label>
-                  <input type="number" step="0.01" value={discount} onChange={(e) => setDiscount(Number(e.target.value))} className="w-full px-3 py-2 border rounded" />
+                  <label className="block text-sm text-slate-300">Desconto</label>
+                  <input type="number" step="0.01" value={discount} onChange={(e) => setDiscount(Number(e.target.value))} className="w-full px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
                 </div>
                 <div>
-                  <label className="block text-sm">Taxa de entrega</label>
-                  <input type="number" step="0.01" value={deliveryFee} onChange={(e) => setDeliveryFee(Number(e.target.value))} className="w-full px-3 py-2 border rounded" />
+                  <label className="block text-sm text-slate-300">Taxa de entrega</label>
+                  <input type="number" step="0.01" value={deliveryFee} onChange={(e) => setDeliveryFee(Number(e.target.value))} className="w-full px-3 py-2 border border-slate-600 rounded bg-slate-700 text-white" />
                 </div>
               </div>
             </div>
 
             <div className="mt-3 md:mt-0 w-full md:w-56 lg:w-64 flex-shrink-0">
-              <div className="border rounded p-4 bg-gray-50 text-center h-full flex flex-col justify-center">
-                <div className="text-sm text-gray-500">Total</div>
-                <div className="text-2xl font-bold text-pink-600">R$ {total.toFixed(2)}</div>
+              <div className="border border-slate-600 rounded p-4 bg-slate-700 text-center h-full flex flex-col justify-center">
+                <div className="text-sm text-slate-400">Total</div>
+                <div className="text-2xl font-bold text-blue-600">R$ {total.toFixed(2)}</div>
 
-                <div className="text-sm text-gray-500 mt-3">Pago</div>
+                <div className="text-sm text-slate-400 mt-3">Pago</div>
                 <div className="text-lg font-semibold">R$ {Number(amountPaid || 0).toFixed(2)}</div>
 
-                <div className="text-sm text-gray-500 mt-2">Restante</div>
-                <div className="text-lg font-semibold text-pink-600">R$ {remaining.toFixed(2)}</div>
+                <div className="text-sm text-slate-400 mt-2">Restante</div>
+                <div className="text-lg font-semibold text-blue-600">R$ {remaining.toFixed(2)}</div>
               </div>
             </div>
           </div>
 
           <div className="mt-4 flex gap-3">
-            <button onClick={saveOrder} style={{flex:2}} className="w-full bg-pink-600 text-white px-4 py-3 rounded">Salvar Pedido</button>
+            <button onClick={saveOrder} style={{flex:2}} className="w-full bg-blue-600 text-white px-4 py-3 rounded">Salvar Pedido</button>
 
             <div className="relative" style={{flex:1}}>
               <button
                 onClick={() => setShowPrintOptionsOrderEditor((s) => !s)}
-                className="w-full bg-white border px-4 py-3 rounded text-pink-600 flex items-center justify-center gap-2"
+                className="w-full bg-slate-700 border border-slate-600 px-4 py-3 rounded text-blue-400 flex items-center justify-center gap-2"
                 title="Opções de impressão"
               >
                 <span>Impressão</span>
@@ -725,10 +725,10 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
               </button>
 
               {showPrintOptionsOrderEditor && (
-                <div className="absolute right-0 bottom-full mb-2 w-44 bg-white border border-gray-200 rounded shadow p-2 z-40">
+                <div className="absolute right-0 bottom-full mb-2 w-44 bg-slate-800 border border-slate-600 rounded shadow p-2 z-40">
                   <button
                     onClick={() => { setShowPrintOptionsOrderEditor(false); printOrder(); }}
-                    className="w-full text-left bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left bg-slate-700 border border-slate-600 text-slate-200 px-3 py-2 rounded hover:bg-slate-600 text-sm"
                   >
                     Imprimir
                   </button>
@@ -744,7 +744,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
             </div>
 
             <button onClick={sendWhatsapp} style={{flex:1}} className="w-full bg-green-50 border px-4 py-3 rounded text-green-600">Enviar Whatsapp</button>
-            <button onClick={onClose} style={{flex:1}} className="w-full px-4 py-3 border rounded">Cancelar</button>
+            <button onClick={onClose} style={{flex:1}} className="w-full px-4 py-3 border border-slate-600 rounded bg-slate-700 text-slate-200">Cancelar</button>
           </div>
         </div>
 
