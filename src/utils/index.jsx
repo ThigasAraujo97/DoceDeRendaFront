@@ -8,8 +8,8 @@ export const OrderStatusDisplay = {
 
 export const parseBackendDateTime = (dateString) => {
   if (!dateString) return null;
-  const tryIso = new Date(dateString);
-  if (!isNaN(tryIso.getTime())) return tryIso;
+  // Tenta formato brasileiro dd/MM/yyyy HH:mm PRIMEIRO para evitar que new Date()
+  // interprete como MM/DD (formato americano) quando dia <= 12
   const m = String(dateString).match(/^(\d{2})\/(\d{2})\/(\d{4})[ T](\d{2}):(\d{2})$/);
   if (m) {
     const [, dd, mm, yyyy, hh, min] = m;
@@ -20,6 +20,8 @@ export const parseBackendDateTime = (dateString) => {
     const [, yyyy, mm, dd, hh, min] = m2;
     return new Date(Number(yyyy), Number(mm) - 1, Number(dd), Number(hh), Number(min));
   }
+  const tryIso = new Date(dateString);
+  if (!isNaN(tryIso.getTime())) return tryIso;
   return null;
 };
 

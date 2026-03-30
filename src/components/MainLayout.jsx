@@ -53,18 +53,18 @@ export default function MainLayout() {
 	}, [auth?.user]);
 
 	return (
-		<div className="min-h-screen bg-pink-50 flex">
+		<div className="min-h-screen bg-slate-900 flex">
 			<Sidebar />
 
 			<div className="flex-1 p-6">
 				<main className="w-full">
 					<header className="sticky top-0 z-20">
 						<div className="flex justify-end items-center gap-4">
-							<div className="flex items-center gap-3 bg-pink-100 px-3 py-2 rounded-full">
-								<div className="w-8 h-8 rounded-full bg-white overflow-hidden">
+							<div className="flex items-center gap-3 bg-slate-800 border border-slate-700 px-3 py-2 rounded-full">
+								<div className="w-8 h-8 rounded-full bg-slate-700 overflow-hidden">
 									<img src="/avatar.png" alt="avatar" className="w-full h-full object-cover" onError={(e)=>{e.target.onerror=null;e.target.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%23fff%22/></svg>'}} />
 								</div>
-								<div className="text-sm font-semibold text-pink-700">Olá, {displayName}</div>
+								<div className="text-sm font-semibold text-slate-200">Olá, {displayName}</div>
 								<button
 									type="button"
 									onClick={() => {
@@ -72,7 +72,7 @@ export default function MainLayout() {
 										try { document.cookie = 'token=; Max-Age=0; path=/'; } catch (e) {}
 										navigate('/login');
 									}}
-									className="text-sm text-pink-600 hover:underline"
+									className="text-sm text-blue-400 hover:underline"
 								>
 									Sair
 								</button>

@@ -1,0 +1,51 @@
+<svg width="680" height="260" viewBox="30 55 460 125" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@500&amp;family=Space+Grotesk:wght@400&amp;display=swap');
+      .logo-brand { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 56px; letter-spacing: -1px; }
+      .logo-tagline { font-family: 'Space Grotesk', sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 4px; }
+      .icon-bg { fill: #F1EFE8; }
+      .check-fill { fill: #1D9E75; }
+      .brand-gr { fill: #F5F5F5; }
+      .brand-jot { fill: #1D9E75; }
+      .brand-it { fill: #0F6E56; }
+      .tag-text { fill: #888780; }
+      .dot-ring { stroke: #D3D1C7; fill: none; }
+      .sub-text { fill: #5F5E5A; }
+      .tick-line { stroke: #1D9E75; }
+      .icon-border { stroke: #D3D1C7; }
+      .brand-dot { fill: #1D9E75; }
+    </style>
+  </defs>
+
+  <!-- clipboard icon -->
+  <rect x="50" y="70" width="80" height="80" rx="16" class="icon-bg"/>
+  <rect x="50" y="70" width="80" height="80" rx="16" class="icon-border" fill="none" stroke-width="0.5"/>
+
+  <rect x="80" y="67" width="20" height="8" rx="4" class="icon-bg"/>
+  <rect x="80" y="67" width="20" height="8" rx="4" class="icon-border" fill="none" stroke-width="0.5"/>
+
+  <rect x="68" y="80" width="44" height="5" rx="2.5" class="check-fill"/>
+
+  <rect x="68" y="95" width="28" height="3" rx="1.5" class="sub-text" opacity="0.5"/>
+  <path d="M100 94 L103 98 L109 91" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="tick-line" fill="none"/>
+
+  <rect x="68" y="107" width="22" height="3" rx="1.5" class="sub-text" opacity="0.5"/>
+  <path d="M100 106 L103 110 L109 103" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="tick-line" fill="none"/>
+
+  <rect x="68" y="119" width="32" height="3" rx="1.5" class="sub-text" opacity="0.3"/>
+  <circle cx="105" cy="120.5" r="3" class="dot-ring" stroke-width="1.2"/>
+
+  <rect x="68" y="131" width="18" height="3" rx="1.5" class="sub-text" opacity="0.3"/>
+  <circle cx="105" cy="132.5" r="3" class="dot-ring" stroke-width="1.2"/>
+
+  <!-- brand text -->
+  <text x="154" y="132" class="logo-brand brand-gr">GR</text>
+  <text x="244" y="132" class="logo-brand brand-jot">Jot</text>
+  <text x="322" y="132" class="logo-brand brand-it">It</text>
+
+  <circle cx="370" cy="114" r="5" class="brand-dot"/>
+
+  <!-- tagline -->
+  <text x="154" y="168" class="logo-tagline tag-text">AGENDAMENTO DE PEDIDOS</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .ic-card { fill: #1D9E75; }
+      .ic-clip { fill: #0F6E56; }
+      .ic-bar  { fill: #E1F5EE; }
+      .ic-line { fill: #E1F5EE; }
+      .ic-tick { stroke: #04342C; fill: none; }
+      .ic-ring { stroke: #E1F5EE; fill: none; }
+      .ic-bg   { fill: #FAFAF8; }
+    </style>
+  </defs>
+
+  <!-- rounded square background (app icon style) -->
+  <rect width="512" height="512" rx="112" class="ic-bg"/>
+
+  <!-- clipboard body -->
+  <rect x="96" y="136" width="320" height="336" rx="32" class="ic-card"/>
+
+  <!-- clip at top -->
+  <rect x="196" y="96" width="120" height="56" rx="28" class="ic-clip"/>
+  <rect x="216" y="108" width="80" height="32" rx="16" class="ic-bg" opacity="0.25"/>
+
+  <!-- title bar -->
+  <rect x="128" y="176" width="256" height="24" rx="12" class="ic-bar" opacity="0.9"/>
+
+  <!-- row 1 — checked -->
+  <rect x="128" y="224" width="148" height="16" rx="8" class="ic-line" opacity="0.55"/>
+  <path d="M306 220 L322 240 L354 200" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="ic-tick"/>
+
+  <!-- row 2 — checked -->
+  <rect x="128" y="272" width="116" height="16" rx="8" class="ic-line" opacity="0.55"/>
+  <path d="M306 268 L322 288 L354 248" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="ic-tick"/>
+
+  <!-- row 3 — pending -->
+  <rect x="128" y="320" width="164" height="16" rx="8" class="ic-line" opacity="0.3"/>
+  <circle cx="346" cy="328" r="16" class="ic-ring" stroke-width="10"/>
+
+  <!-- row 4 — pending -->
+  <rect x="128" y="368" width="100" height="16" rx="8" class="ic-line" opacity="0.3"/>
+  <circle cx="346" cy="376" r="16" class="ic-ring" stroke-width="10"/>
+
+  <!-- row 5 — pending -->
+  <rect x="128" y="416" width="132" height="16" rx="8" class="ic-line" opacity="0.3"/>
+  <circle cx="346" cy="424" r="16" class="ic-ring" stroke-width="10"/>
+</svg>
