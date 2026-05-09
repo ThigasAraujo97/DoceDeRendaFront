@@ -3,7 +3,9 @@ import { NavLink } from "react-router-dom";
 
 export const Sidebar = () => (
   <aside className="w-64 bg-slate-800 p-4 hidden md:block min-h-screen border-r border-slate-700">
-    <h2 className="text-xl font-bold text-slate-200 mb-6">🍰 Doce De Renda</h2>
+    <div className="mb-6 px-1 flex justify-center">
+      <img src="/Certo.png" alt="Doce De Renda" className="w-40" />
+    </div>
     <nav>
       <NavLink
         to="/dashboard"

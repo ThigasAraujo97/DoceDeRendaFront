@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toastError, toastSuccess } from "../utils/toast";
+import api from "../services/api";
+import { sendPrint } from "../services/printApi";
 import Modal from "../components/Modal";
 import { ProductEditor } from "./ProductsPage";
 import { CustomerEditor } from "./CustomersPage";
@@ -350,18 +352,24 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
     }
   };
 
-  const printOrder = () => {
-    const ids = orderId ? String(orderId) : "";
-    const target = ids ? `/api/orders/print?ids=${encodeURIComponent(ids)}` : `/api/orders/print?preview=true`;
-    try { window.open(target, '_blank'); } catch (err) { console.warn('Não foi possível abrir a janela de impressão', err); }
+  const printOrder = async () => {
+    try {
+      const ids = orderId ? String(orderId) : "";
+      await sendPrint(ids || "preview", false);
+      toastSuccess("🖨️ Enviado para impressão da conta!", 10000);
+    } catch (err) {
+      toastError("Erro ao enviar para impressão");
+    }
   };
 
-  const printOrderKitchen = () => {
-    const ids = orderId ? String(orderId) : "";
-    const target = ids
-      ? `/api/orders/print/kitchen?ids=${encodeURIComponent(ids)}`
-      : `/api/orders/print/kitchen?preview=true`;
-    try { window.open(target, '_blank'); } catch (err) { console.warn('Não foi possível abrir a janela de impressão da cozinha', err); }
+  const printOrderKitchen = async () => {
+    try {
+      const ids = orderId ? String(orderId) : "";
+      await sendPrint(ids || "preview", true);
+      toastSuccess("🖨️ Enviado para impressão da cozinha!", 10000);
+    } catch (err) {
+      toastError("Erro ao enviar para impressão da cozinha");
+    }
   };
 
   const sendWhatsapp = async () => {
@@ -513,7 +521,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                     setCustomerCellPhone(c.cellPhone || c.CellPhone || "");
                     setCustomerResults([]);
                   }}
-                  className="p-2 hover:bg-blue-50 cursor-pointer"
+                  className="p-2 hover:bg-slate-600 cursor-pointer text-slate-100"
                 >
                   {c.name} - {c.cellPhone || c.CellPhone || "-"}
                 </div>
@@ -608,7 +616,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                       onClick={existing ? undefined : () => addItemFromProduct(p)}
                       className={
                         `p-2 flex justify-between items-center ${
-                          existing ? 'bg-gray-50 text-gray-500 cursor-default' : 'hover:bg-blue-50 cursor-pointer'
+                          existing ? 'bg-slate-700 text-slate-400 cursor-default' : 'hover:bg-slate-600 cursor-pointer text-slate-100'
                         }`
                       }
                       role={existing ? 'option' : 'button'}
@@ -616,7 +624,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                     >
                       <div>
                         <span className="font-medium">{p.name}</span>
-                        <span className="text-sm text-gray-400 ml-2">— R$ {Number(p.price || 0).toFixed(2)}</span>
+                        <span className="text-sm text-slate-400 ml-2">— R$ {Number(p.price || 0).toFixed(2)}</span>
                       </div>
                       {existing ? (
                         <div className="text-xs text-slate-500">Adicionado x{qty}</div>

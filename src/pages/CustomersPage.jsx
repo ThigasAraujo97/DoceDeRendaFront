@@ -400,7 +400,7 @@ const CustomersPage = () => {
         </table>
         </div>
       </div>
-      <div className="flex justify-center gap-2 mt-4">
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
         {Array.from({ length: table.totalPages }, (_, i) => i + 1).map((page) => (
           <button
             key={page}

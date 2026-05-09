@@ -1,4 +1,6 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+// Empty in development so relative /api/ paths go through the Vite dev proxy.
+// Set to the full backend URL in .env.production for production builds.
+const API_BASE = import.meta.env.VITE_API_BASE || "";
 
 const originalFetch = window.fetch.bind(window);
 window.fetch = (input, init) => {

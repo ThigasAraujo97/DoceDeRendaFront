@@ -13,13 +13,12 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://18.116.80.216:5000',
+        target: 'http://localhost:5150',
         changeOrigin: true,
-      }
-      ,
+      },
       // forward login route (backend exposes POST /login)
       '/login': {
-        target: 'http://18.116.80.216:5000',
+        target: 'http://localhost:5150',
         changeOrigin: true,
       }
     }

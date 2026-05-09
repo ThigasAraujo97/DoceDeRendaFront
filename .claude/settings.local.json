@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(find '/c/Users/Thiago Araujo/Desktop' -name *.png -newer '/c/Users/Thiago Araujo/Desktop/Doce.png')",
+      "Bash(find '/c/Users/Thiago Araujo/Desktop/DoceDeRendaV2' -name *.png -o -name *.jpg -o -name *.svg)",
+      "Bash(head -20 find '/c/Users/Thiago Araujo/Desktop/DoceDeRenda' -name *.png -o -name *.jpg -o -name *.svg)"
     ]
   }
 }

@@ -20,6 +20,10 @@ export default function LoginPage() {
       // loginService saved token and user locally; update context
       const token = localStorage.getItem("auth_token");
       auth.login(token);
+      // store credentials in sessionStorage so print calls can get a fresh token
+      // (sessionStorage is cleared when the browser tab closes)
+      sessionStorage.setItem("_pr_e", email);
+      sessionStorage.setItem("_pr_p", password);
       navigate("/dashboard");
     } catch (err) {
       // Always show a generic authentication error to avoid exposing raw HTTP messages

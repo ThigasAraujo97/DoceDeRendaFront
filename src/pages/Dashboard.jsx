@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import api from "../services/api";
+import { sendPrint } from "../services/printApi";
 import { statusBadge, parseBackendDateTime } from '../utils';
+import { toastSuccess, toastError } from '../utils/toast';
 
 // small local formatter to avoid adding a dependency on date-fns
 function formatDeliveryDate(value) {
@@ -121,15 +123,13 @@ const Dashboard = ({ orders = [], customers = [], products = [] }) => {
   const toggleSelectOrder = () => {};
 
   const handlePrint = async (kitchen = false) => {
-    // open printing endpoint in new tab with `ids` query param like OrdersPage
     try {
       const ids = dayOrders.map(o => o?.id).filter(Boolean);
       if (ids.length === 0) return;
-      const endpoint = kitchen ? '/api/orders/print/kitchen' : '/api/orders/print';
-      const url = `${endpoint}?ids=${encodeURIComponent(ids.join(','))}`;
-      window.open(url, '_blank');
+      await sendPrint(ids.join(','), kitchen);
+      toastSuccess(kitchen ? '🖨️ Enviado para impressão da cozinha!' : '🖨️ Enviado para impressão da conta!', 10000);
     } catch (e) {
-      // ignore
+      toastError(`Erro ao enviar para impressão: ${e.message}`);
     }
   };
 

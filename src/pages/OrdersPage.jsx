@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { toastError } from "../utils/toast";
+import { toastError, toastSuccess } from "../utils/toast";
+import api from "../services/api";
+import { sendPrint } from "../services/printApi";
 import { useTable } from "../hooks/useTable";
 import { parseBackendDateTime, statusBadge } from "../utils";
 import OrderEditor from "./OrderEditor";
@@ -104,29 +106,27 @@ const OrdersPage = ({ openOrder }) => {
 
   const table = useTable(orders, pageSize);
 
-  const printForKitchen = () => {
-      try {
-        if (!orders || orders.length === 0) return toastError("Nenhum pedido para imprimir");
+  const printForKitchen = async () => {
+    try {
+      if (!orders || orders.length === 0) return toastError("Nenhum pedido para imprimir");
       const ids = orders.map((o) => o.id).filter(Boolean).join(",");
-        if (!ids) return toastError("Nenhum pedido válido para imprimir");
-      const target = `/api/orders/print/kitchen?ids=${encodeURIComponent(ids)}`;
-      window.open(target, "_blank");
+      if (!ids) return toastError("Nenhum pedido válido para imprimir");
+      await sendPrint(ids, true);
+      toastSuccess("🖨️ Enviado para impressão da cozinha!", 10000);
     } catch (e) {
-      console.error(e);
-        toastError("Erro ao gerar impressão para cozinha");
+      toastError(`Erro: ${e.message}`);
     }
   };
 
-  const printFiltered = () => {
-      try {
-        if (!orders || orders.length === 0) return toastError("Nenhum pedido para imprimir");
+  const printFiltered = async () => {
+    try {
+      if (!orders || orders.length === 0) return toastError("Nenhum pedido para imprimir");
       const ids = orders.map((o) => o.id).filter(Boolean).join(",");
-        if (!ids) return toastError("Nenhum pedido válido para imprimir");
-      const target = `/api/orders/print?ids=${encodeURIComponent(ids)}`;
-      window.open(target, "_blank");
+      if (!ids) return toastError("Nenhum pedido válido para imprimir");
+      await sendPrint(ids, false);
+      toastSuccess("🖨️ Enviado para impressão da conta!", 10000);
     } catch (e) {
-      console.error(e);
-        toastError("Erro ao gerar impressão");
+      toastError(`Erro: ${e.message}`);
     }
   };
 

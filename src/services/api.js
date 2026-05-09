@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+// In development, VITE_API_BASE is intentionally empty so that axios uses
+// relative URLs that are intercepted and proxied by the Vite dev server.
+// This avoids cross-origin CORS preflights that would block [Authorize] endpoints.
+// In production, VITE_API_BASE is set to the full backend URL in .env.production.
+const API_BASE = import.meta.env.VITE_API_BASE || "";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -38,7 +42,7 @@ api.interceptors.response.use(
       error.clientMessage = error.message || "Network Error";
     }
 
-    if (status === 401 || status === 403) {
+    if ((status === 401 || status === 403) && !error?.config?.skipAuthRedirect) {
       // clear token and redirect to the client-side login route
       // Use a hash URL so the browser requests '/' (index) instead of '/login',
       // avoiding backend servers that don't serve the SPA route and return 405.
