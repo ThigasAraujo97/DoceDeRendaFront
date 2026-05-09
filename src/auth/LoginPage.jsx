@@ -40,11 +40,8 @@ export default function LoginPage() {
   return (
     <div className={wrapperClass}>
       <form onSubmit={submit} className={formClass}>
-        <div className="mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white">GRJotIt</h1>
-            <h2 className="text-lg font-semibold text-white/80">Entrar</h2>
-          </div>
+        <div className="mb-4 flex justify-center">
+          <img src="/GRJotIt_logo.svg" alt="GRJotIt" className="w-full" />
         </div>
         {error && <div className="text-sm text-red-400 mb-3">{error}</div>}
         <label className="block mb-2 text-sm text-white/80">Email</label>

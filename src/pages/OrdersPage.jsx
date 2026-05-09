@@ -135,10 +135,10 @@ const OrdersPage = ({ openOrder }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-pink-700">Pedidos</h1>
+        <h1 className="text-2xl font-bold text-slate-200">Pedidos</h1>
         <button
           onClick={() => setEditingOrderId(0)}
-          className="bg-pink-600 text-white px-4 py-2 rounded-xl hover:bg-pink-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
         >
           + Novo Pedido
         </button>
@@ -150,12 +150,12 @@ const OrdersPage = ({ openOrder }) => {
           placeholder="Buscar por nome do cliente..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="flex-1 min-w-0 px-4 py-2 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white placeholder-slate-400"
         />
 
         <button
           onClick={fetchAllOrders}
-          className="bg-white border border-gray-300 text-gray-700 p-2 rounded-lg hover:bg-gray-50 text-sm flex items-center justify-center"
+          className="bg-slate-700 border border-slate-600 text-slate-200 p-2 rounded-lg hover:bg-slate-700 text-sm flex items-center justify-center"
           title="Recarregar pedidos"
           aria-label="Recarregar pedidos"
         >
@@ -165,7 +165,7 @@ const OrdersPage = ({ openOrder }) => {
         <div className="relative">
           <button
             onClick={() => setShowPrintOptions((s) => !s)}
-            className="ml-2 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-2"
+            className="ml-2 bg-slate-700 border border-slate-600 text-slate-200 px-3 py-2 rounded-lg hover:bg-slate-700 text-sm flex items-center gap-2"
             title="Opções de impressão"
           >
             <span>Impressão</span>
@@ -173,17 +173,17 @@ const OrdersPage = ({ openOrder }) => {
           </button>
 
           {showPrintOptions && (
-            <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded shadow p-2 z-40">
+            <div className="absolute right-0 mt-2 w-44 bg-slate-800 border border-slate-600 rounded shadow p-2 z-40">
               <button
                 onClick={() => { setShowPrintOptions(false); printFiltered(); }}
-                className="w-full text-left bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+                className="w-full text-left bg-slate-700 border border-slate-600 text-slate-200 px-3 py-2 rounded hover:bg-slate-600 text-sm"
               >
                 Imprimir
               </button>
 
               <button
                 onClick={() => { setShowPrintOptions(false); printForKitchen(); }}
-                className="w-full text-left mt-2 bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm"
+                className="w-full text-left mt-2 bg-white border border-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-slate-700 text-sm"
               >
                 Imprimir Cozinha
               </button>
@@ -193,26 +193,26 @@ const OrdersPage = ({ openOrder }) => {
 
         <button
           onClick={() => setShowAdvancedFilters((s) => !s)}
-          className="ml-2 text-sm text-pink-600 hover:underline"
+          className="ml-2 text-sm text-blue-400 hover:underline"
         >
           {showAdvancedFilters ? 'Fechar filtros' : 'Filtros avançados'}
         </button>
       </div>
 
       {showAdvancedFilters && (
-        <div className="fixed right-0 top-20 h-[calc(100vh-5rem)] w-80 bg-white border-l shadow-lg p-4 z-50 overflow-auto">
+        <div className="fixed right-0 top-20 h-[calc(100vh-5rem)] w-80 bg-slate-800 border-l border-slate-700 shadow-lg p-4 z-50 overflow-auto">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold text-pink-700">Filtros Avançados</h3>
-            <button onClick={() => setShowAdvancedFilters(false)} className="text-gray-500">✕</button>
+            <h3 className="text-lg font-semibold text-slate-200">Filtros Avançados</h3>
+            <button onClick={() => setShowAdvancedFilters(false)} className="text-slate-400">✕</button>
           </div>
 
           <div className="space-y-3">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Status</label>
+              <label className="block text-sm text-slate-400 mb-1">Status</label>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-700 text-white"
               >
                 <option value="">Todos</option>
                 <option value="OrderPlaced">Pedido Realizado</option>
@@ -222,31 +222,31 @@ const OrdersPage = ({ openOrder }) => {
             </div>
 
             <div>
-              <label className="block text-sm text-gray-600 mb-1">De</label>
+              <label className="block text-sm text-slate-400 mb-1">De</label>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-700 text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Até</label>
+              <label className="block text-sm text-slate-400 mb-1">Até</label>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-700 text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Itens por página</label>
+              <label className="block text-sm text-slate-400 mb-1">Itens por página</label>
               <select
                 value={pageSize}
                 onChange={(e) => setPageSize(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-slate-600 rounded-lg text-sm bg-slate-700 text-white"
               >
                 <option value={15}>15</option>
                 <option value={25}>25</option>
@@ -257,9 +257,9 @@ const OrdersPage = ({ openOrder }) => {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow overflow-x-auto">
+      <div className="bg-slate-800 rounded-2xl shadow overflow-x-auto">
         <table className="w-full text-sm text-center">
-          <thead className="bg-pink-100 text-pink-700">
+          <thead className="bg-slate-700 text-slate-200">
             <tr>
               <th className="px-3 py-2">Pedido</th>
               <th className="px-3 py-2">Cliente</th>
@@ -272,17 +272,17 @@ const OrdersPage = ({ openOrder }) => {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="py-6 text-gray-500">Carregando pedidos...</td>
+                <td colSpan={6} className="py-6 text-slate-400">Carregando pedidos...</td>
               </tr>
             ) : table.pageData.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-6 text-gray-500">Nenhum pedido encontrado</td>
+                <td colSpan={6} className="py-6 text-slate-400">Nenhum pedido encontrado</td>
               </tr>
             ) : (
               table.pageData.map((o) => (
                 <tr
                   key={o.id}
-                  className="border-t hover:bg-pink-50 cursor-pointer"
+                  className="border-t hover:bg-slate-700 cursor-pointer"
                   onClick={() => setEditingOrderId(o.id)}
                 >
                   <td className="font-mono text-sm">#{o.id}</td>
@@ -305,8 +305,8 @@ const OrdersPage = ({ openOrder }) => {
             onClick={() => table.setCurrentPage(page)}
             className={`px-3 py-1 rounded ${
               table.currentPage === page
-                ? "bg-pink-600 text-white"
-                : "bg-pink-100 hover:bg-pink-200"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-700 hover:bg-slate-600"
             }`}
           >
             {page}

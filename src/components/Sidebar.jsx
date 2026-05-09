@@ -2,12 +2,12 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 export const Sidebar = () => (
-  <aside className="w-64 bg-pink-100 p-4 hidden md:block min-h-screen">
-    <h2 className="text-xl font-bold text-pink-700 mb-6">🍰 Doce De Renda</h2>
+  <aside className="w-64 bg-slate-800 p-4 hidden md:block min-h-screen border-r border-slate-700">
+    <h2 className="text-xl font-bold text-slate-200 mb-6">🍰 Doce De Renda</h2>
     <nav>
       <NavLink
         to="/dashboard"
-        className={({ isActive }) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-pink-300' : 'hover:bg-pink-200'}`}
+        className={({ isActive }) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-blue-700 text-white' : 'text-slate-300 hover:bg-slate-700'}`}
         onClick={() => {
           // dispatch a global event so Dashboard can refresh even when already active
           try {
@@ -19,13 +19,13 @@ export const Sidebar = () => (
       >
         Dashboard
       </NavLink>
-      <NavLink to="/pedidos" className={({isActive}) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-pink-300' : 'hover:bg-pink-200'}`}>
+      <NavLink to="/pedidos" className={({isActive}) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-blue-700 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
         Pedidos
       </NavLink>
-      <NavLink to="/clientes" className={({isActive}) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-pink-300' : 'hover:bg-pink-200'}`}>
+      <NavLink to="/clientes" className={({isActive}) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-blue-700 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
         Clientes
       </NavLink>
-      <NavLink to="/produtos" className={({isActive}) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-pink-300' : 'hover:bg-pink-200'}`}>
+      <NavLink to="/produtos" className={({isActive}) => `block w-full text-left px-3 py-2 rounded mb-2 ${isActive ? 'bg-blue-700 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
         Produtos
       </NavLink>
     </nav>

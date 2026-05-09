@@ -43,7 +43,7 @@ const Modal = ({ isOpen, title, children, onClose, large }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start md:items-center justify-center z-50 p-4">
       <div className={`bg-white rounded-lg shadow-lg ${sizeClass} max-h-[92vh] flex flex-col`}>
         <div className="p-6 border-b flex justify-between items-center flex-shrink-0">
-          <h2 className="text-xl font-bold text-pink-700">{title}</h2>
+          <h2 className="text-xl font-bold text-blue-700">{title}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
         </div>
         <div className="p-6 overflow-y-auto flex-1">{children}</div>
@@ -55,7 +55,7 @@ const Modal = ({ isOpen, title, children, onClose, large }) => {
 // ===================== SIDEBAR =====================
 const Sidebar = ({ page, setPage }) => {
   const user = typeof window !== "undefined" ? localStorage.getItem("authUser") : null;
-  const [theme, setTheme] = useState(typeof window !== 'undefined' ? (localStorage.getItem('theme') || 'pink') : 'pink');
+  const [theme, setTheme] = useState(typeof window !== 'undefined' ? (localStorage.getItem('theme') || 'blue') : 'blue');
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -66,14 +66,14 @@ const Sidebar = ({ page, setPage }) => {
   }, [theme]);
 
   return (
-    <aside className="w-64 bg-pink-100 p-4 hidden md:block">
-      <h2 className="text-xl font-bold text-pink-700 mb-6">🍰 Doce De Renda</h2>
+    <aside className="w-64 bg-blue-100 p-4 hidden md:block">
+      <h2 className="text-xl font-bold text-blue-700 mb-6">🍰 Doce De Renda</h2>
       {['Dashboard', 'Pedidos', 'Clientes', 'Produtos'].map((p) => (
         <button
           key={p}
           onClick={() => setPage(p)}
           className={`block w-full text-left px-3 py-2 rounded mb-2 ${
-            page === p ? "bg-pink-300" : "hover:bg-pink-200"
+            page === p ? "bg-blue-300" : "hover:bg-blue-200"
           }`}
         >
           {p}
@@ -86,7 +86,7 @@ const Sidebar = ({ page, setPage }) => {
           <div className="text-sm text-gray-600 mr-2 self-center">Tema:</div>
           <button
             onClick={() => setTheme('pink')}
-            className={`px-3 py-2 rounded ${theme === 'pink' ? 'bg-pink-300 text-pink-700' : 'bg-white border text-sm'}`}
+              className={`px-3 py-2 rounded ${theme === 'pink' ? 'bg-blue-300 text-blue-700' : 'bg-white border text-sm'}`}
           >
             Rosa
           </button>
@@ -290,10 +290,10 @@ const OrdersPage = ({ openOrder }) => {
     <div>
       {/* HEADER */}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-pink-700">Pedidos</h1>
+        <h1 className="text-2xl font-bold text-blue-700">Pedidos</h1>
         <button
           onClick={() => openOrder(undefined)}
-          className="bg-pink-600 text-white px-4 py-2 rounded-xl hover:bg-pink-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
         >
           + Novo Pedido
         </button>
@@ -306,7 +306,7 @@ const OrdersPage = ({ openOrder }) => {
           placeholder="Buscar por nome do cliente..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="flex-1 min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <button
@@ -349,7 +349,7 @@ const OrdersPage = ({ openOrder }) => {
 
         <button
           onClick={() => setShowAdvancedFilters((s) => !s)}
-          className="ml-2 text-sm text-pink-600 hover:underline"
+          className="ml-2 text-sm text-blue-600 hover:underline"
         >
           {showAdvancedFilters ? 'Fechar filtros' : 'Filtros avançados'}
         </button>
@@ -359,7 +359,7 @@ const OrdersPage = ({ openOrder }) => {
       {showAdvancedFilters && (
         <div className="fixed right-0 top-20 h-[calc(100vh-5rem)] w-80 bg-white border-l shadow-lg p-4 z-50 overflow-auto">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold text-pink-700">Filtros Avançados</h3>
+            <h3 className="text-lg font-semibold text-blue-700">Filtros Avançados</h3>
             <button onClick={() => setShowAdvancedFilters(false)} className="text-gray-500">✕</button>
           </div>
 
@@ -417,7 +417,7 @@ const OrdersPage = ({ openOrder }) => {
       {/* TABELA */}
       <div className="bg-white rounded-2xl shadow overflow-x-auto">
           <table className="w-full text-sm text-center">
-          <thead className="bg-pink-100 text-pink-700">
+          <thead className="bg-blue-100 text-blue-700">
             <tr>
               <th className="px-3 py-2">Pedido</th>
               <th className="px-3 py-2">Cliente</th>
@@ -444,7 +444,7 @@ const OrdersPage = ({ openOrder }) => {
               table.pageData.map((o) => (
                 <tr
                   key={o.id}
-                  className="border-t hover:bg-pink-50 cursor-pointer"
+                  className="border-t hover:bg-blue-50 cursor-pointer"
                   onClick={() => openOrder(o.id)}
                 >
                   <td className="font-mono text-sm">#{o.id}</td>
@@ -468,8 +468,8 @@ const OrdersPage = ({ openOrder }) => {
             onClick={() => table.setCurrentPage(page)}
             className={`px-3 py-1 rounded ${
               table.currentPage === page
-                ? "bg-pink-600 text-white"
-                : "bg-pink-100 hover:bg-pink-200"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-100 hover:bg-blue-200"
             }`}
           >
             {page}
@@ -488,24 +488,24 @@ const Dashboard = ({ orders, customers, products }) => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-pink-700 mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-blue-700 mb-6">Dashboard</h1>
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-sm font-medium text-gray-600">Total de Pedidos</h3>
-          <p className="text-3xl font-bold text-pink-600 mt-2">{totalOrders}</p>
+          <p className="text-3xl font-bold text-blue-600 mt-2">{totalOrders}</p>
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-sm font-medium text-gray-600">Receita Total</h3>
-          <p className="text-3xl font-bold text-pink-600 mt-2">R$ {totalRevenue.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-blue-600 mt-2">R$ {totalRevenue.toFixed(2)}</p>
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-sm font-medium text-gray-600">Ticket Médio</h3>
-          <p className="text-3xl font-bold text-pink-600 mt-2">R$ {averageOrderValue.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-blue-600 mt-2">R$ {averageOrderValue.toFixed(2)}</p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-bold text-pink-700 mb-4">Status dos Pedidos</h3>
+          <h3 className="text-lg font-bold text-blue-700 mb-4">Status dos Pedidos</h3>
           {["OrderPlaced", "Confirmed", "Finished"].map((status) => {
             const count = orders.filter((o) => o.status === status).length;
             return (
@@ -516,7 +516,7 @@ const Dashboard = ({ orders, customers, products }) => {
           })}
         </div>
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-bold text-pink-700 mb-4">Resumo</h3>
+          <h3 className="text-lg font-bold text-blue-700 mb-4">Resumo</h3>
           <p className="text-sm text-gray-700 mb-2">Total de Clientes: <strong>{customers.length}</strong></p>
           <p className="text-sm text-gray-700 mb-2">Total de Produtos: <strong>{products.length}</strong></p>
           <p className="text-sm text-gray-700">Pedidos Concluídos: <strong>{orders.filter((o) => o.status === "Finished").length}</strong></p>
@@ -640,7 +640,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nome completo"
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -654,7 +654,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
               }}
               placeholder="Telefone (11 dígitos com DDD)"
               maxLength="11"
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="text-xs text-gray-500">{cellPhone.length}/11 dígitos</span>
           </div>
@@ -670,7 +670,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
               value={street}
               onChange={(e) => setStreet(e.target.value)}
               placeholder="Rua"
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -682,7 +682,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
                 value={number}
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Número"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -692,7 +692,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
                 value={neighborhood}
                 onChange={(e) => setNeighborhood(e.target.value)}
                 placeholder="Bairro"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -705,7 +705,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
                 value={state}
                 onChange={(e) => setState(e.target.value)}
                 placeholder="Estado"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -715,7 +715,7 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Cidade"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -740,14 +740,14 @@ const CustomerEditor = ({ customerId, customers, setCustomers, onClose }) => {
                 value={numberApartment}
                 onChange={(e) => setNumberApartment(e.target.value)}
                 placeholder="Número do apartamento"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           )}
 
           <button
             onClick={saveCustomer}
-            className="w-full bg-pink-600 text-white px-4 py-2 rounded font-semibold hover:bg-pink-700"
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700"
           >
             Salvar Cliente
           </button>
@@ -813,10 +813,10 @@ const CustomersPage = ({ customers, setCustomers }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-pink-700">Clientes</h1>
+        <h1 className="text-2xl font-bold text-blue-700">Clientes</h1>
         <button
           onClick={() => setEditingCustomerId(0)}
-          className="bg-pink-600 text-white px-4 py-2 rounded-xl hover:bg-pink-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
         >
           + Novo Cliente
         </button>
@@ -828,7 +828,7 @@ const CustomersPage = ({ customers, setCustomers }) => {
             placeholder="Buscar por nome ou telefone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <select
             value={pageSize}
@@ -844,7 +844,7 @@ const CustomersPage = ({ customers, setCustomers }) => {
       </div>
       <div className="bg-white rounded-2xl shadow overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-pink-100 text-pink-700">
+          <thead className="bg-blue-100 text-blue-700">
             <tr>
               <th className="px-4 py-3 text-left">Nome</th>
               <th className="px-4 py-3 text-left">Celular</th>
@@ -853,13 +853,13 @@ const CustomersPage = ({ customers, setCustomers }) => {
           </thead>
           <tbody>
             {table.pageData.map((c) => (
-              <tr key={c.id} className="border-t hover:bg-pink-50">
+              <tr key={c.id} className="border-t hover:bg-blue-50">
                 <td className="px-4 py-3">{c.name}</td>
                 <td className="px-4 py-3">{c.cellPhone || "-"}</td>
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => setEditingCustomerId(c.id)}
-                    className="text-pink-600 hover:text-pink-800 font-semibold text-sm"
+                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
                   >
                     Editar
                   </button>
@@ -876,8 +876,8 @@ const CustomersPage = ({ customers, setCustomers }) => {
             onClick={() => table.setCurrentPage(page)}
             className={`px-3 py-1 rounded ${
               table.currentPage === page
-                ? "bg-pink-600 text-white"
-                : "bg-pink-100 hover:bg-pink-200"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-100 hover:bg-blue-200"
             }`}
           >
             {page}
@@ -1004,7 +1004,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nome do produto"
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -1015,7 +1015,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="Preço"
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -1028,7 +1028,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Selecione uma categoria</option>
               {categories && categories.length > 0 ? (
@@ -1052,7 +1052,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
           <button
             type="button"
             onClick={() => setShowAddCategory((s) => !s)}
-            className="text-sm text-pink-600 hover:text-pink-800"
+            className="text-sm text-blue-600 hover:text-blue-800"
           >
             {showAddCategory ? "Cancelar" : "+ Adicionar categoria"}
           </button>
@@ -1064,11 +1064,11 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
                 placeholder="Nome da nova categoria"
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tipo de unidade</label>
-                <select value={newCategoryUnitType} onChange={(e) => setNewCategoryUnitType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <select value={newCategoryUnitType} onChange={(e) => setNewCategoryUnitType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="Unit">Unidade (Unit)</option>
                   <option value="Kg">Quilograma (Kg)</option>
                 </select>
@@ -1078,7 +1078,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
                   type="button"
                   onClick={createCategory}
                   disabled={creatingCategory}
-                  className="flex-1 bg-pink-600 text-white px-3 py-2 rounded text-sm hover:bg-pink-700"
+                  className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700"
                 >
                   {creatingCategory ? "Criando..." : "Criar categoria"}
                 </button>
@@ -1100,7 +1100,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="Activated">Ativo</option>
             <option value="Removed">Removido</option>
@@ -1108,7 +1108,7 @@ const ProductEditor = ({ productId, products, setProducts, onClose }) => {
         </div>
         <button
           onClick={saveProduct}
-          className="w-full bg-pink-600 text-white px-4 py-2 rounded font-semibold hover:bg-pink-700"
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700"
         >
           Salvar Produto
         </button>
@@ -1223,10 +1223,10 @@ const ProductsPage = ({ products, setProducts }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-pink-700">Produtos</h1>
+        <h1 className="text-2xl font-bold text-blue-700">Produtos</h1>
         <button
           onClick={() => setEditingProductId(0)}
-          className="bg-pink-600 text-white px-4 py-2 rounded-xl hover:bg-pink-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
         >
           + Novo Produto
         </button>
@@ -1239,7 +1239,7 @@ const ProductsPage = ({ products, setProducts }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             disabled={!!statusFilter}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:bg-gray-100 disabled:text-gray-500"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
           <select
             value={statusFilter}
@@ -1268,7 +1268,7 @@ const ProductsPage = ({ products, setProducts }) => {
       </div>
       <div className="bg-white rounded-2xl shadow overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-pink-100 text-pink-700">
+          <thead className="bg-blue-100 text-blue-700">
             <tr>
               <th className="px-4 py-3 text-left">Nome</th>
               <th className="px-4 py-3 text-left">Categoria</th>
@@ -1279,7 +1279,7 @@ const ProductsPage = ({ products, setProducts }) => {
           </thead>
           <tbody>
             {table.pageData.map((p) => (
-              <tr key={p.id} className="border-t hover:bg-pink-50">
+              <tr key={p.id} className="border-t hover:bg-blue-50">
                 <td className="px-4 py-3">{p.name}</td>
                 <td className="px-4 py-3 text-gray-600">{p.categoryName || "-"}</td>
                 <td className="px-4 py-3 text-gray-600">{productStatusLabel(p.productStatus ?? p.status)}</td>
@@ -1287,7 +1287,7 @@ const ProductsPage = ({ products, setProducts }) => {
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => setEditingProductId(p.id)}
-                    className="text-pink-600 hover:text-pink-800 font-semibold text-sm"
+                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
                   >
                     Editar
                   </button>
@@ -1304,8 +1304,8 @@ const ProductsPage = ({ products, setProducts }) => {
             onClick={() => table.setCurrentPage(page)}
             className={`px-3 py-1 rounded ${
               table.currentPage === page
-                ? "bg-pink-600 text-white"
-                : "bg-pink-100 hover:bg-pink-200"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-100 hover:bg-blue-200"
             }`}
           >
             {page}
@@ -1767,10 +1767,10 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
               value={customerQuery}
               onChange={(e) => { if (!orderId) { setCustomerQuery(e.target.value); setSelectedCustomer(null); } }}
               placeholder="Buscar ou digitar nome do cliente"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={!!orderId}
             />
-            <button onClick={() => setShowCustomerEditorId(0)} className="px-3 py-2 bg-pink-100 rounded">+ Cliente</button>
+            <button onClick={() => setShowCustomerEditorId(0)} className="px-3 py-2 bg-blue-100 rounded">+ Cliente</button>
           </div>
           {!orderId && customerResults && customerResults.length > 0 && customerQuery && (
             <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
@@ -1783,7 +1783,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                     setCustomerCellPhone(c.cellPhone || c.CellPhone || "");
                     setCustomerResults([]);
                   }}
-                  className="p-2 hover:bg-pink-50 cursor-pointer"
+                  className="p-2 hover:bg-blue-50 cursor-pointer"
                 >
                   {c.name} - {c.cellPhone || c.CellPhone || "-"}
                 </div>
@@ -1844,7 +1844,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
           <div className="mb-3">
             <div className="flex gap-2">
               <input type="text" value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Buscar produto..." className="flex-1 px-3 py-2 border rounded" />
-              <button onClick={() => setShowProductEditorId(0)} className="px-3 py-2 bg-pink-100 rounded">+ Produto</button>
+              <button onClick={() => setShowProductEditorId(0)} className="px-3 py-2 bg-blue-100 rounded">+ Produto</button>
             </div>
             {productResults && productResults.length > 0 && productQuery && (
               <div className="border bg-white mt-1 max-h-40 overflow-y-auto">
@@ -1857,7 +1857,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                       onClick={existing ? undefined : () => addItemFromProduct(p)}
                       className={
                         `p-2 flex justify-between items-center ${
-                          existing ? 'bg-gray-50 text-gray-500 cursor-default' : 'hover:bg-pink-50 cursor-pointer'
+                          existing ? 'bg-gray-50 text-gray-500 cursor-default' : 'hover:bg-blue-50 cursor-pointer'
                         }`
                       }
                       role={existing ? 'option' : 'button'}
@@ -1897,7 +1897,7 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                           <div className="text-xs text-gray-500">Unit</div>
                           <div className="flex items-center gap-2">
                             <div className="text-right font-medium">R$ {Number(it.price).toFixed(2)}</div>
-                            <span className="px-2 py-1 text-sm bg-pink-50 text-pink-600 rounded">{(String(it.unitType || '').toLowerCase().includes('kg')) ? 'kg' : 'uni'}</span>
+                            <span className="px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded">{(String(it.unitType || '').toLowerCase().includes('kg')) ? 'kg' : 'uni'}</span>
                           </div>
                         </div>
 
@@ -1930,8 +1930,8 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
                   <div className="flex gap-2 items-center">
                     <input type="number" step="0.01" value={amountPaid} onChange={(e) => setAmountPaid(Number(e.target.value))} className="flex-1 px-3 py-2 border rounded" />
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => setAmountPaid(Number(total.toFixed(2)))} className="px-3 py-1 bg-pink-100 text-pink-700 rounded text-sm">Total</button>
-                      <button type="button" onClick={() => setAmountPaid(Number((total / 2).toFixed(2)))} className="px-3 py-1 bg-pink-100 text-pink-700 rounded text-sm">50%</button>
+                      <button type="button" onClick={() => setAmountPaid(Number(total.toFixed(2)))} className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">Total</button>
+                      <button type="button" onClick={() => setAmountPaid(Number((total / 2).toFixed(2)))} className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">50%</button>
                     </div>
                   </div>
                 </div>
@@ -1949,24 +1949,24 @@ const OrderEditor = ({ orderId, orders, setOrders, onClose, customers, setCustom
             <div className="mt-3 md:mt-0 w-full md:w-56 lg:w-64 flex-shrink-0">
               <div className="border rounded p-4 bg-gray-50 text-center h-full flex flex-col justify-center">
                 <div className="text-sm text-gray-500">Total</div>
-                <div className="text-2xl font-bold text-pink-600">R$ {total.toFixed(2)}</div>
+                <div className="text-2xl font-bold text-blue-600">R$ {total.toFixed(2)}</div>
 
                 <div className="text-sm text-gray-500 mt-3">Pago</div>
                 <div className="text-lg font-semibold">R$ {Number(amountPaid || 0).toFixed(2)}</div>
 
                 <div className="text-sm text-gray-500 mt-2">Restante</div>
-                <div className="text-lg font-semibold text-pink-600">R$ {remaining.toFixed(2)}</div>
+                <div className="text-lg font-semibold text-blue-600">R$ {remaining.toFixed(2)}</div>
               </div>
             </div>
           </div>
 
           <div className="mt-4 flex gap-3">
-            <button onClick={saveOrder} style={{flex:2}} className="w-full bg-pink-600 text-white px-4 py-3 rounded">Salvar Pedido</button>
+            <button onClick={saveOrder} style={{flex:2}} className="w-full bg-blue-600 text-white px-4 py-3 rounded">Salvar Pedido</button>
 
             <div className="relative" style={{flex:1}}>
               <button
                 onClick={() => setShowPrintOptionsOrderEditor((s) => !s)}
-                className="w-full bg-white border px-4 py-3 rounded text-pink-600 flex items-center justify-center gap-2"
+                className="w-full bg-white border px-4 py-3 rounded text-blue-600 flex items-center justify-center gap-2"
                 title="Opções de impressão"
               >
                 <span>Impressão</span>

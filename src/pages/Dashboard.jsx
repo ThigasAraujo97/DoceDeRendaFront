@@ -250,24 +250,24 @@ const Dashboard = ({ orders = [], customers = [], products = [] }) => {
   return (
     <>
       <div>
-      <h1 className="text-3xl font-bold text-pink-700 mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-slate-200 mb-6">Dashboard</h1>
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Total de Pedidos</h3>
-          <p className="text-3xl font-bold text-pink-600 mt-2">{totalOrders}</p>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-slate-400">Total de Pedidos</h3>
+          <p className="text-3xl font-bold text-blue-400 mt-2">{totalOrders}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Receita Total</h3>
-          <p className="text-3xl font-bold text-pink-600 mt-2">R$ {totalRevenue.toFixed(2)}</p>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-slate-400">Receita Total</h3>
+          <p className="text-3xl font-bold text-blue-400 mt-2">R$ {totalRevenue.toFixed(2)}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Ticket Médio</h3>
-          <p className="text-3xl font-bold text-pink-600 mt-2">R$ {averageOrderValue.toFixed(2)}</p>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-slate-400">Ticket Médio</h3>
+          <p className="text-3xl font-bold text-blue-400 mt-2">R$ {averageOrderValue.toFixed(2)}</p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-bold text-pink-700 mb-4">Status dos Pedidos</h3>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-lg font-bold text-slate-200 mb-4">Status dos Pedidos</h3>
           {[
             { key: 'OrderPlaced', label: 'Pedido Realizado' },
             { key: 'Confirmed', label: 'Pedido Confirmado' },
@@ -275,42 +275,42 @@ const Dashboard = ({ orders = [], customers = [], products = [] }) => {
           ].map((s) => {
             const count = statusCounts[s.key] ?? (orders.filter((o) => o.status === s.key).length);
             return (
-              <p key={s.key} className="text-sm text-gray-700 mb-2">
+              <p key={s.key} className="text-sm text-slate-300 mb-2">
                 {s.label}: <strong>{count}</strong>
               </p>
             );
           })}
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-bold text-pink-700 mb-4">Resumo</h3>
-          <p className="text-sm text-gray-700 mb-2">Total de Clientes: <strong>{totalCustomers}</strong></p>
-          <p className="text-sm text-gray-700 mb-2">Total de Produtos: <strong>{totalProducts}</strong></p>
-          <p className="text-sm text-gray-700">Pedidos Concluídos: <strong>{statusCounts['Finished'] ?? orders.filter((o) => o.status === 'Finished').length}</strong></p>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-lg font-bold text-slate-200 mb-4">Resumo</h3>
+          <p className="text-sm text-slate-300 mb-2">Total de Clientes: <strong>{totalCustomers}</strong></p>
+          <p className="text-sm text-slate-300 mb-2">Total de Produtos: <strong>{totalProducts}</strong></p>
+          <p className="text-sm text-slate-300">Pedidos Concluídos: <strong>{statusCounts['Finished'] ?? orders.filter((o) => o.status === 'Finished').length}</strong></p>
         </div>
       </div>
       </div>
 
       {/* Pedidos do Dia */}
-    <div className="bg-white rounded-lg shadow p-6 mt-8">
+    <div className="bg-slate-800 rounded-lg shadow p-6 mt-8">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-pink-700">Pedidos do Dia</h3>
+        <h3 className="text-lg font-bold text-slate-200">Pedidos do Dia</h3>
         <div className="flex items-center space-x-2">
-          <button onClick={() => handlePrint(false)} className="bg-pink-500 text-white px-3 py-2 rounded hover:bg-pink-600">Imprimir Conta</button>
-          <button onClick={() => handlePrint(true)} className="bg-pink-200 text-pink-700 px-3 py-2 rounded hover:bg-pink-300">Imprimir Cozinha</button>
+          <button onClick={() => handlePrint(false)} className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">Imprimir Conta</button>
+          <button onClick={() => handlePrint(true)} className="bg-slate-700 text-slate-200 px-3 py-2 rounded hover:bg-slate-600">Imprimir Cozinha</button>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex items-center space-x-2">
-          <label className="text-sm text-gray-600">Data Inicial</label>
-          <input type="datetime-local" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} className="border rounded px-2 py-1" />
+          <label className="text-sm text-slate-400">Data Inicial</label>
+          <input type="datetime-local" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} className="border border-slate-600 rounded px-2 py-1 bg-slate-700 text-white" />
         </div>
         <div className="flex items-center space-x-2">
-          <label className="text-sm text-gray-600">Data Final</label>
-          <input type="datetime-local" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} className="border rounded px-2 py-1" />
+          <label className="text-sm text-slate-400">Data Final</label>
+          <input type="datetime-local" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} className="border border-slate-600 rounded px-2 py-1 bg-slate-700 text-white" />
         </div>
         <div className="flex items-center space-x-2">
-          <button onClick={fetchDayOrders} className="bg-pink-100 text-pink-700 px-3 py-1 rounded">Buscar</button>
+          <button onClick={fetchDayOrders} className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Buscar</button>
         </div>
         <div className="flex items-center space-x-3 ml-4">
           {STATUS_OPTIONS.map((s) => (
@@ -331,7 +331,7 @@ const Dashboard = ({ orders = [], customers = [], products = [] }) => {
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">
           <thead>
-            <tr className="text-left text-sm text-gray-600">
+            <tr className="text-left text-sm text-slate-400">
               <th className="px-3 py-2">Pedido</th>
               <th className="px-3 py-2">Cliente</th>
               <th className="px-3 py-2">Status</th>
@@ -342,7 +342,7 @@ const Dashboard = ({ orders = [], customers = [], products = [] }) => {
           </thead>
           <tbody>
             {dayOrders.map((o) => (
-              <tr key={o?.id} className="border-t text-sm">
+              <tr key={o?.id} className="border-t border-slate-700 text-sm text-slate-300">
                 <td className="px-3 py-2">#{o?.id}</td>
                 <td className="px-3 py-2">{o?.customerName ?? o?.customer?.name}</td>
                 <td className="px-3 py-2">{statusBadge(o?.orderStatus ?? o?.status)}</td>
@@ -356,7 +356,7 @@ const Dashboard = ({ orders = [], customers = [], products = [] }) => {
       </div>
 
       <div className="flex justify-end mt-4">
-        <div className="text-sm text-gray-700">Total do Dia: <strong>R$ {dayTotal.toFixed(2)}</strong></div>
+        <div className="text-sm text-slate-300">Total do Dia: <strong>R$ {dayTotal.toFixed(2)}</strong></div>
       </div>
       </div>
     </>
