@@ -45,13 +45,13 @@ export const statusBadge = (status, variant = "block") => {
   const baseInline = "inline-block px-3 py-1 text-sm font-semibold rounded";
   const base = variant === "inline" ? baseInline : baseBlock;
   if (key === "Confirmed") return (
-    <span className={`${base} bg-green-50 border border-green-200 text-green-700`}>{label}</span>
+    <span className={`${base} bg-green-900/40 border border-green-600 text-green-400`}>{label}</span>
   );
   if (key === "Finished") return (
-    <span className={`${base} bg-blue-50 border border-blue-200 text-blue-700`}>{label}</span>
+    <span className={`${base} bg-blue-900/40 border border-blue-500 text-blue-400`}>{label}</span>
   );
-  // default -> OrderPlaced (amarelo claro)
+  // default -> OrderPlaced
   return (
-    <span className={`${base} bg-yellow-50 border border-yellow-200 text-yellow-800`}>{label}</span>
+    <span className={`${base} bg-yellow-900/40 border border-yellow-600 text-yellow-400`}>{label}</span>
   );
 };

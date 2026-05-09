@@ -379,7 +379,7 @@ const ProductsPage = () => {
           </thead>
           <tbody>
             {table.pageData.map((p) => (
-              <tr key={p.id} className="border-t hover:bg-slate-700">
+              <tr key={p.id} className="border-t border-slate-700 hover:bg-slate-700 text-blue-200">
                 <td className="px-4 py-3">{p.name}</td>
                 <td className="px-4 py-3 text-slate-400">{p.categoryName || "-"}</td>
                 <td className="px-4 py-3 text-slate-400">{productStatusLabel(p.productStatus ?? p.status)}</td>

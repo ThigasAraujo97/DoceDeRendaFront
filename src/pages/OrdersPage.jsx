@@ -282,7 +282,7 @@ const OrdersPage = ({ openOrder }) => {
               table.pageData.map((o) => (
                 <tr
                   key={o.id}
-                  className="border-t hover:bg-slate-700 cursor-pointer"
+                  className="border-t border-slate-700 hover:bg-slate-700 cursor-pointer text-blue-200"
                   onClick={() => setEditingOrderId(o.id)}
                 >
                   <td className="font-mono text-sm">#{o.id}</td>

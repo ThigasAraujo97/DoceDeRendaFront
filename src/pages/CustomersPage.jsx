@@ -383,7 +383,7 @@ const CustomersPage = () => {
           </thead>
           <tbody>
             {table.pageData.map((c) => (
-              <tr key={c.id} className="border-t hover:bg-slate-700">
+              <tr key={c.id} className="border-t border-slate-700 hover:bg-slate-700 text-blue-200">
                 <td className="px-4 py-3">{c.name}</td>
                 <td className="px-4 py-3">{c.cellPhone || "-"}</td>
                 <td className="px-4 py-3 text-center">
